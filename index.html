@@ -17,7 +17,6 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
-        /* ===== Variables & Reset ===== */
         :root {
             --primary: #1E6F5C;
             --secondary: #F4F9F4;
@@ -57,7 +56,6 @@
             overflow-x: hidden;
         }
 
-        /* ===== Header ===== */
         header {
             width: 100%; max-width: 600px; padding: 20px;
             display: flex; flex-direction: column; align-items: center; text-align: center;
@@ -74,15 +72,17 @@
         .icon-btn:hover { background-color: rgba(0,0,0,0.05); }
 
         .deceased-name { 
-            font-size: 1.6rem; font-weight: 800; color: var(--primary); 
+            font-size: 1.8rem; font-weight: 800; color: var(--primary); 
             margin: 5px 0; line-height: 1.3;
         }
-        .deceased-date { 
-            font-size: 0.85rem; color: var(--text-sub); 
-            background: rgba(0,0,0,0.05); padding: 4px 12px; border-radius: 20px; 
+        
+        /* تنسيق الدعاء تحت الاسم */
+        .deceased-prayer { 
+            font-size: 0.95rem; color: var(--text-sub); 
+            background: rgba(0,0,0,0.05); padding: 8px 15px; border-radius: 12px; 
+            margin-top: 8px; line-height: 1.6; max-width: 90%;
         }
 
-        /* ===== Navigation ===== */
         .tabs-container {
             width: 90%; max-width: 600px; background: var(--card-bg); padding: 6px;
             border-radius: 16px; box-shadow: var(--shadow);
@@ -98,7 +98,6 @@
         }
         .tab-btn.active { background-color: var(--primary); color: #FFFFFF; font-weight: 700; }
 
-        /* ===== Main Content ===== */
         main { width: 100%; max-width: 600px; padding: 0 20px 40px; flex: 1; }
         .tab-content { display: none; animation: slideUp 0.4s ease; }
         .tab-content.active { display: block; }
@@ -109,57 +108,28 @@
             position: relative;
         }
 
-        /* ===== Dua Slider & Actions ===== */
+        /* Elements styles */
         .dua-container { position: relative; min-height: 200px; display: flex; flex-direction: column; justify-content: center; }
-        .dua-controls { 
-            display: flex; justify-content: space-between; align-items: center; 
-            margin-top: 20px; border-top: 1px solid var(--border); padding-top: 15px;
-        }
-        .nav-btn {
-            background: rgba(0,0,0,0.05); border: none; color: var(--primary);
-            width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
-            transition: var(--transition);
-        }
-        .nav-btn:hover { background: var(--primary); color: white; }
+        .dua-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; border-top: 1px solid var(--border); padding-top: 15px; }
+        .nav-btn { background: rgba(0,0,0,0.05); border: none; color: var(--primary); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: var(--transition); }
+        .copy-btn { display: flex; align-items: center; gap: 5px; background: none; border: 1px solid var(--primary); color: var(--primary); padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
         
-        .copy-btn {
-            display: flex; align-items: center; gap: 5px; background: none; border: 1px solid var(--primary);
-            color: var(--primary); padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer;
-        }
-        .copy-btn:active { transform: scale(0.95); background: var(--primary); color: white; }
-
-        /* ===== Adhkar List ===== */
-        .azkar-toggle {
-            display: flex; background: rgba(0,0,0,0.05); border-radius: 12px; padding: 4px; margin-bottom: 20px;
-        }
-        .azkar-opt {
-            flex: 1; border: none; background: none; padding: 10px; border-radius: 8px;
-            cursor: pointer; color: var(--text-sub); font-family: var(--font-main); font-weight: 600;
-        }
+        .azkar-toggle { display: flex; background: rgba(0,0,0,0.05); border-radius: 12px; padding: 4px; margin-bottom: 20px; }
+        .azkar-opt { flex: 1; border: none; background: none; padding: 10px; border-radius: 8px; cursor: pointer; color: var(--text-sub); font-family: var(--font-main); font-weight: 600; }
         .azkar-opt.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        
-        .zekr-item {
-            border-bottom: 1px solid var(--border); padding: 15px 0;
-        }
+        .zekr-item { border-bottom: 1px solid var(--border); padding: 15px 0; }
         .zekr-item:last-child { border-bottom: none; }
-        .zekr-text { font-family: var(--font-quran); font-size: 1.1rem; line-height: 1.8; margin-bottom: 8px; }
-        .zekr-count { font-size: 0.8rem; color: var(--accent); font-weight: bold; }
-
-        /* ===== Typography ===== */
+        
         .quran-text { font-family: var(--font-quran); font-size: 1.3rem; line-height: 2.2; text-align: center; color: var(--text-main); }
-        .highlight { color: var(--primary); font-weight: bold; }
         .surah-header { color: var(--accent); font-size: 1.4rem; text-align: center; margin-bottom: 15px; font-weight: 700; }
-
-        /* ===== Masbaha & Counter ===== */
-        .dhikr-display { font-family: var(--font-quran); font-size: 2.2rem; text-align: center; color: var(--primary); min-height: 80px; display: flex; align-items: center; justify-content: center; margin-bottom: 25px; font-weight: 700; }
+        
+        .dhikr-display { font-family: var(--font-quran); font-size: 2rem; text-align: center; color: var(--primary); min-height: 80px; display: flex; align-items: center; justify-content: center; margin-bottom: 25px; font-weight: 700; padding: 0 10px; line-height: 1.4; }
         .counter-container { width: 220px; height: 220px; margin: 0 auto 30px; position: relative; cursor: pointer; }
-        .counter-circle { width: 100%; height: 100%; border-radius: 50%; background: var(--primary); display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; box-shadow: 0 10px 30px -5px rgba(30, 111, 92, 0.4); transition: transform 0.1s; position: relative; z-index: 2; }
-        .counter-circle:active { transform: scale(0.96); }
+        .counter-circle { width: 100%; height: 100%; border-radius: 50%; background: var(--primary); display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; box-shadow: 0 10px 30px -5px rgba(30, 111, 92, 0.4); transition: transform 0.05s; position: relative; z-index: 2; }
+        .counter-circle:active { transform: scale(0.95); }
         .count-num { font-size: 5rem; font-weight: 800; line-height: 1; }
         .count-target { font-size: 1rem; opacity: 0.8; margin-top: 5px; }
 
-        /* ===== Footer ===== */
         footer { text-align: center; padding: 20px; color: var(--text-sub); font-size: 0.9rem; margin-top: auto; }
         .visitor-counter { font-family: monospace; background: rgba(0,0,0,0.05); padding: 4px 10px; border-radius: 4px; margin-top: 10px; display: inline-block; direction: ltr; font-size: 0.8rem; font-weight: bold; color: var(--primary); }
 
@@ -179,7 +149,9 @@
         <div class="deceased-info">
             <div style="font-size: 0.9rem; color: var(--text-sub);">صدقة جارية عن روح</div>
             <div class="deceased-name">المرحوم صبري كامل سليم</div>
-            <div class="deceased-date">٣ يناير ٢٠٢٦ م</div>
+            <div class="deceased-prayer">
+                اللهم ارحمه واغفر له واجعل قبره روضة من رياض الجنة واسكنه الفردوس الأعلى
+            </div>
         </div>
     </header>
 
@@ -197,7 +169,7 @@
                 <div class="counter-container" onclick="incrementCounter()">
                     <div class="counter-circle">
                         <div class="count-num" id="totalCounter">0</div>
-                        <div class="count-target" id="batchCounter">0 / 33</div>
+                        <div class="count-target" id="batchCounter">الدورة: 1</div>
                     </div>
                 </div>
                 <button class="icon-btn" onclick="confirmReset()" style="font-size: 1rem; width: auto; border-radius: 8px;">تصفير ↺</button>
@@ -208,14 +180,11 @@
             <div class="card">
                 <div class="surah-header">دعاء للمتوفى</div>
                 <div class="dua-container">
-                    <div class="quran-text" id="duaDisplayText" style="text-align: justify; font-size: 1.2rem;">
-                        </div>
+                    <div class="quran-text" id="duaDisplayText" style="text-align: justify; font-size: 1.2rem;"></div>
                 </div>
                 <div class="dua-controls">
                     <button class="nav-btn" onclick="changeDua(-1)">&#10095;</button> 
-                    <button class="copy-btn" onclick="copyCurrentDua()">
-                        <span>نسخ الدعاء</span> 📋
-                    </button>
+                    <button class="copy-btn" onclick="copyCurrentDua()"><span>نسخ الدعاء</span> 📋</button>
                     <button class="nav-btn" onclick="changeDua(1)">&#10094;</button> 
                 </div>
                 <div style="text-align: center; font-size: 0.8rem; color: var(--text-sub); margin-top: 10px;">
@@ -230,8 +199,7 @@
                     <button class="azkar-opt active" onclick="toggleAzkar('morning', this)">أذكار الصباح ☀️</button>
                     <button class="azkar-opt" onclick="toggleAzkar('evening', this)">أذكار المساء 🌙</button>
                 </div>
-                <div id="azkarList">
-                    </div>
+                <div id="azkarList"></div>
             </div>
         </div>
 
@@ -260,155 +228,186 @@
         <div class="visitor-counter" title="عدد الزوار الكلي">
             👥 زوار الموقع: <span id="visits">جارِ التحميل...</span>
         </div>
-                    </footer>
-                        <script>
-        /* ===== DATA: Duas & Azkar ===== */
+                </footer>
+            <script>
+        /* ===== CONFIGURATION ===== */
+        // قائمة الأذكار التي تتبدل في المسبحة
+        const TASBEEH_AZKAR = [
+            "سُبْحَانَ اللَّهِ",
+            "الْحَمْدُ لِلَّهِ",
+            "لَا إِلَهَ إِلَّا اللَّهُ",
+            "اللَّهُ أَكْبَرُ",
+            "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
+            "أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ",
+            "اللَّهُمَّ صَلِّ عَلَى نَبِيِّنَا مُحَمَّدٍ"
+        ];
+
         const DUAS = [
-            "اللهم اغفر للمرحوم صبري كامل سليم وارحمه، وعافه واعف عنه، وأكرم نزله، ووسع مدخله، واغسله بالماء والثلج والبرد، ونقه من الخطايا كما ينقى الثوب الأبيض من الدنس.",
+            "اللهم اغفر للمرحوم صبري كامل سليم وارحمه، وعافه واعف عنه، وأكرم نزله، ووسع مدخله، واغسله بالماء والثلج والبرد.",
             "اللهم أبدله داراً خيراً من داره، وأهلاً خيراً من أهله، وأدخله الجنة، وأعذه من عذاب القبر ومن عذاب النار.",
             "اللهم اجعل قبره روضة من رياض الجنة، ولا تجعله حفرة من حفر النار.",
             "اللهم افسح له في قبره مد بصره، وافرش قبره من فراش الجنة.",
-            "اللهم إنه في ذمتك وحبل جوارك، فقه فتنة القبر وعذاب النار، وأنت أهل الوفاء والحق، فاغفر له وارحمه إنك أنت الغفور الرحيم.",
+            "اللهم إنه في ذمتك وحبل جوارك، فقه فتنة القبر وعذاب النار، وأنت أهل الوفاء والحق.",
             "اللهم إن كان محسناً فزد في حسناته، وإن كان مسيئاً فتجاوز عن سيئاته.",
             "اللهم أدخله الجنة من غير مناقشة حساب ولا سابقة عذاب.",
             "اللهم آنسه في وحدته، وفي وحشته، وفي غربته.",
-            "اللهم أنزله منزلاً مباركاً وأنت خير المنزلين.",
             "اللهم اجعل عن يمينه نوراً، وعن شماله نوراً، ومن أمامه نوراً، ومن فوقه نوراً.",
             "اللهم يمن كتابة، ويسر حسابه، وثقل بالحسنات ميزانه.",
-            "اللهم اجعله من الذين سعدوا في الجنة خالدين فيها ما دامت السماوات والأرض.",
-            "اللهم شفع فيه نبينا ومصطفاك، واحشره تحت لوائه، واسقه من يده الشريفة شربة هنيئة لا يظمأ بعدها أبداً.",
-            "اللهم إنه كان يشهد أنك لا إله إلا أنت، وأن محمداً عبدك ورسولك، وأنت أعلم به.",
-            "اللهم ارحمه رحمةً تسع السماوات والأرض.",
-            "اللهم اجعل مرضه وكفارته في ميزان حسناته ورفعة لدرجاته."
+            "اللهم شفع فيه نبينا ومصطفاك، واسقه من يده الشريفة شربة هنيئة لا يظمأ بعدها أبداً."
         ];
 
         const AZKAR = {
             morning: [
-                { t: "أَصْـبَحْنا وَأَصْـبَحَ المُـلْكُ لله وَالحَمدُ لله، لا إلهَ إلاّ اللّهُ وَحدَهُ لا شَريكَ لهُ...", c: "1 مرة" },
-                { t: "اللّهُـمَّ ما أَصْبَـحَ بي مِـنْ نِعْـمَةٍ أَو بِأَحَـدٍ مِـنْ خَلْـقِك، فَمِـنْكَ وَحْـدَكَ لا شريكَ لَـك...", c: "1 مرة" },
-                { t: "سُبْحـانَ اللهِ وَبِحَمْـدِهِ عَدَدَ خَلْـقِه، وَرِضـا نَفْسِـه، وَزِنَـةَ عَرْشِـه، وَمِـدادَ كَلِمـاتِـه.", c: "3 مرات" }
+                { t: "أَصْـبَحْنا وَأَصْـبَحَ المُـلْكُ لله وَالحَمدُ لله، لا إلهَ إلاّ اللّهُ وَحدَهُ لا شَريكَ لهُ...", c: "1" },
+                { t: "اللّهُـمَّ ما أَصْبَـحَ بي مِـنْ نِعْـمَةٍ أَو بِأَحَـدٍ مِـنْ خَلْـقِك، فَمِـنْكَ وَحْـدَكَ لا شريكَ لَـك...", c: "1" },
+                { t: "سُبْحـانَ اللهِ وَبِحَمْـدِهِ عَدَدَ خَلْـقِه، وَرِضـا نَفْسِـه، وَزِنَـةَ عَرْشِـه، وَمِـدادَ كَلِمـاتِـه.", c: "3" }
             ],
             evening: [
-                { t: "أَمْسَيْـنا وَأَمْسـى المُـلْكُ لله وَالحَمدُ لله، لا إلهَ إلاّ اللّهُ وَحدَهُ لا شَريكَ لهُ...", c: "1 مرة" },
-                { t: "اللّهُـمَّ بِكَ أَمْسَـينا وَبِكَ أَصْـبَحْنا، وَبِكَ نَحْـيا وَبِكَ نَمُـوتُ وَإِلَـيْكَ الْمَصِير.", c: "1 مرة" },
-                { t: "أَعـوذُ بِكَلِمـاتِ اللّهِ التّـامّـاتِ مِنْ شَـرِّ ما خَلَـق.", c: "3 مرات" }
+                { t: "أَمْسَيْـنا وَأَمْسـى المُـلْكُ لله وَالحَمدُ لله، لا إلهَ إلاّ اللّهُ وَحدَهُ لا شَريكَ لهُ...", c: "1" },
+                { t: "اللّهُـمَّ بِكَ أَمْسَـينا وَبِكَ أَصْـبَحْنا، وَبِكَ نَحْـيا وَبِكَ نَمُـوتُ وَإِلَـيْكَ الْمَصِير.", c: "1" },
+                { t: "أَعـوذُ بِكَلِمـاتِ اللّهِ التّـامّـاتِ مِنْ شَـرِّ ما خَلَـق.", c: "3" }
             ]
         };
 
-        /* ===== STATE ===== */
         let state = {
             count: 0,
-            duaIndex: 0
+            dhikrIndex: 0,
+            currentZekrIdx: 0,
+            batchCount: 1
         };
-        const TARGET = 33;
-        const STORAGE_KEY = 'sabry_v6_data';
+        const STORAGE_KEY = 'sabry_v7_final';
+
+        /* ===== AUDIO SETUP ===== */
+        // إنشاء سياق صوتي لتوليد صوت النقر دون ملفات خارجية
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playClick() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(800, audioCtx.currentTime); // تردد الصوت
+            oscillator.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.05);
+            
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.05);
+        }
 
         /* ===== INIT ===== */
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
             loadData();
-            
-            // Set Daily Dua based on date
-            const today = new Date().getDate();
-            state.duaIndex = today % DUAS.length;
-            
+            state.dhikrIndex = new Date().getDate() % DUAS.length;
             updateUI();
             updateVisitorCounter();
-            renderAzkar('morning'); // Default
-            
+            renderAzkar('morning');
             if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(console.error);
         });
 
-        /* ===== DUA LOGIC ===== */
-        function updateDua() {
-            document.getElementById('duaDisplayText').textContent = DUAS[state.duaIndex];
-            document.getElementById('duaCounter').textContent = state.duaIndex + 1;
-            document.getElementById('duaTotal').textContent = DUAS.length;
-        }
-
-        function changeDua(dir) {
-            state.duaIndex += dir;
-            if (state.duaIndex >= DUAS.length) state.duaIndex = 0;
-            if (state.duaIndex < 0) state.duaIndex = DUAS.length - 1;
-            updateDua();
-        }
-
-        function copyCurrentDua() {
-            const text = DUAS[state.duaIndex] + "\n\n(صدقة جارية عن روح المرحوم صبري كامل سليم)";
-            navigator.clipboard.writeText(text).then(() => alert('تم نسخ الدعاء 📋'));
-        }
-
-        /* ===== AZKAR LOGIC ===== */
-        function toggleAzkar(type, btn) {
-            document.querySelectorAll('.azkar-opt').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderAzkar(type);
-        }
-
-        function renderAzkar(type) {
-            const list = document.getElementById('azkarList');
-            list.innerHTML = AZKAR[type].map(z => `
-                <div class="zekr-item">
-                    <div class="zekr-text">${z.t}</div>
-                    <div class="zekr-count">${z.c}</div>
-                </div>
-            `).join('');
-        }
-
-        /* ===== MASBAHA LOGIC ===== */
+        /* ===== LOGIC ===== */
         function incrementCounter() {
             state.count++;
-            if (navigator.vibrate) navigator.vibrate(10);
-            if (state.count % TARGET === 0) {
-                confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 }, colors: ['#1E6F5C', '#E9C46A'] });
-                if (navigator.vibrate) navigator.vibrate([30, 30, 30]);
+            
+            // 1. Play Sound
+            playClick();
+            
+            // 2. Vibrate
+            if (navigator.vibrate) navigator.vibrate(15);
+            
+            // 3. Logic for changing Dhikr every 33
+            if (state.count % 33 === 0) {
+                // Change text
+                state.currentZekrIdx = (state.currentZekrIdx + 1) % TASBEEH_AZKAR.length;
+                state.batchCount++;
+                
+                // Celebration effect
+                confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 }, colors: ['#1E6F5C', '#E9C46A'] });
+                if (navigator.vibrate) navigator.vibrate([50, 50]);
             }
+
             updateCounterUI();
             saveData();
         }
 
         function updateCounterUI() {
             document.getElementById('totalCounter').textContent = state.count;
-            const batch = state.count % TARGET || (state.count > 0 && state.count % TARGET === 0 ? TARGET : 0);
-            document.getElementById('batchCounter').textContent = `${batch} / ${TARGET}`;
+            document.getElementById('dhikrText').textContent = TASBEEH_AZKAR[state.currentZekrIdx];
+            
+            let currentBatch = (state.count % 33);
+            if (state.count > 0 && currentBatch === 0) currentBatch = 33;
+            document.getElementById('batchCounter').textContent = `${currentBatch} / 33`;
         }
 
         function confirmReset() {
-            if(confirm('تصفير العداد؟')) {
+            if(confirm('هل تريد تصفير العداد والبدء من جديد؟')) {
                 state.count = 0;
+                state.currentZekrIdx = 0;
+                state.batchCount = 1;
                 updateCounterUI();
                 saveData();
             }
         }
 
-        /* ===== STORAGE ===== */
-        function saveData() { localStorage.setItem(STORAGE_KEY, state.count); }
+        /* ===== DUA & AZKAR ===== */
+        function updateDua() {
+            document.getElementById('duaDisplayText').textContent = DUAS[state.dhikrIndex];
+            document.getElementById('duaCounter').textContent = state.dhikrIndex + 1;
+            document.getElementById('duaTotal').textContent = DUAS.length;
+        }
+        function changeDua(dir) {
+            state.dhikrIndex += dir;
+            if (state.dhikrIndex >= DUAS.length) state.dhikrIndex = 0;
+            if (state.dhikrIndex < 0) state.dhikrIndex = DUAS.length - 1;
+            updateDua();
+        }
+        function copyCurrentDua() {
+            const text = DUAS[state.dhikrIndex] + "\n\n(عن روح المرحوم صبري كامل سليم)";
+            navigator.clipboard.writeText(text).then(() => alert('تم النسخ'));
+        }
+        function toggleAzkar(type, btn) {
+            document.querySelectorAll('.azkar-opt').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderAzkar(type);
+        }
+        function renderAzkar(type) {
+            const list = document.getElementById('azkarList');
+            list.innerHTML = AZKAR[type].map(z => `
+                <div class="zekr-item">
+                    <div class="zekr-text">${z.t}</div>
+                    <div class="zekr-count">${z.c} مرات</div>
+                </div>
+            `).join('');
+        }
+
+        /* ===== UTILS ===== */
+        function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
         function loadData() {
             const saved = localStorage.getItem(STORAGE_KEY);
-            if(saved) state.count = parseInt(saved);
+            if(saved) {
+                try { state = JSON.parse(saved); } catch(e) { state.count = 0; }
+            }
         }
-
-        /* ===== GLOBAL VISITOR COUNTER ===== */
+        function updateUI() {
+            updateCounterUI();
+            updateDua();
+        }
         function updateVisitorCounter() {
-            const namespace = 'sabry-memorial-v6-final';
-            const key = 'global_visits_fixed';
-            
+            const namespace = 'sabry-memorial-v7-final';
+            const key = 'visits-count-fix';
             fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`)
                 .then(res => res.json())
-                .then(data => {
-                    document.getElementById('visits').textContent = data.value;
-                })
-                .catch(err => {
-                    console.error('Counter Error:', err);
-                    document.getElementById('visits').textContent = 'غير متاح حالياً';
-                });
+                .then(data => document.getElementById('visits').textContent = data.value)
+                .catch(() => document.getElementById('visits').textContent = 'غير متاح');
         }
-
-        /* ===== UI UTILS ===== */
         function initTheme() {
-            if (localStorage.getItem('theme') === 'dark') {
-                document.body.setAttribute('data-theme', 'dark');
-            }
+            if (localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
         }
         function toggleTheme() {
             const isDark = document.body.getAttribute('data-theme') === 'dark';
@@ -423,15 +422,9 @@
             if (id === 'dua') updateDua();
         }
         function shareCurrentPage() {
-            if (navigator.share) {
-                navigator.share({ title: 'المرحوم صبري كامل سليم', url: window.location.href });
-            } else {
-                window.open(`https://wa.me/?text=${encodeURIComponent(window.location.href)}`);
-            }
+            if (navigator.share) navigator.share({ title: 'المرحوم صبري كامل سليم', url: window.location.href });
+            else window.open(`https://wa.me/?text=${encodeURIComponent(window.location.href)}`);
         }
-        
-        // Initial UI Update
-        updateCounterUI();
     </script>
 </body>
 </html>
