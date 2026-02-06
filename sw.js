@@ -1,23 +1,16 @@
 /**
- * Service Worker - Sabry Kamel Selim Memorial (GitHub Pages friendly)
- * - Caches same-origin static assets for offline support
- * - Avoids caching third-party resources (often blocked by CORS in SW cache.addAll)
+ * Service Worker - V5.1 (Dedicated Version)
+ * Optimized for Sabry Kamel Selim Memorial
  */
 
-const CACHE_NAME = 'sabry-memorial-v4';
-
+const CACHE_NAME = 'masbaha-sabry-v5.1';
 const STATIC_ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './icon-72x72.png',
-  './icon-96x96.png',
-  './icon-128x128.png',
-  './icon-144x144.png',
-  './icon-152x152.png',
   './icon-192x192.png',
-  './icon-384x384.png',
-  './icon-512x512.png'
+  'https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@400;700&display=swap',
+  'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js'
 ];
 
 self.addEventListener('install', (event) => {
@@ -29,42 +22,29 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : null)))
-    )
+    caches.keys().then((keys) => Promise.all(
+      keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+    ))
   );
   self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
-  const req = event.request;
+  if (event.request.method !== 'GET') return;
+  const url = new URL(event.request.url);
 
-  // Only cache GET requests
-  if (req.method !== 'GET') return;
-
-  const url = new URL(req.url);
-
-  // Only handle same-origin requests (GitHub Pages + your repo path)
-  if (url.origin !== self.location.origin) return;
+  // استثناء روابط العداد من الكاش
+  if (url.hostname.includes('countapi')) return;
 
   event.respondWith(
-    caches.match(req).then((cached) => {
-      if (cached) return cached;
-
-      return fetch(req)
-        .then((res) => {
-          // Cache successful responses
-          if (res && res.ok) {
-            const clone = res.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
-          }
-          return res;
-        })
-        .catch(() => {
-          // Offline fallback for navigations
-          if (req.mode === 'navigate') return caches.match('./index.html');
-          return cached;
-        });
+    caches.match(event.request).then((cached) => {
+      const fetched = fetch(event.request).then((resp) => {
+        if (resp.ok) {
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, resp.clone()));
+        }
+        return resp;
+      }).catch(() => cached);
+      return cached || fetched;
     })
   );
 });
