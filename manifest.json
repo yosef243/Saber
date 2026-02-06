@@ -1,20 +1,29 @@
 {
-  "name": "المرحوم صبري كامل سليم - مسبحة ذكية",
-  "short_name": "مسبحة صبري كامل",
-  "description": "صدقة جارية عن روح المرحوم صبري كامل سليم - مسبحة ذكية وأدعية وآيات قرآنية",
-  "start_url": "./",
+  "name": "المرحوم صبري كامل سليم",
+  "short_name": "صدقة جارية",
+  "description": "صفحة صدقة جارية ومسبحة إلكترونية للمرحوم صبري كامل سليم",
+  "start_url": ".",
   "display": "standalone",
-  "background_color": "#1e3c72",
-  "theme_color": "#1e3c72",
+  "background_color": "#F4F9F4",
+  "theme_color": "#1E6F5C",
   "orientation": "portrait",
-  "scope": "./",
+  "scope": ".",
   "lang": "ar",
   "dir": "rtl",
-  "categories": [
-    "religion",
-    "lifestyle"
-  ],
+  "categories": ["religion", "lifestyle"],
   "icons": [
+    {
+      "src": "icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
     {
       "src": "icon-128x128.png",
       "sizes": "128x128",
@@ -50,18 +59,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
-    },
-    {
-      "src": "icon-72x72.png",
-      "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-96x96.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "any maskable"
     }
   ],
   "shortcuts": [
@@ -70,24 +67,7 @@
       "short_name": "المسبحة",
       "description": "فتح المسبحة مباشرة",
       "url": "./?tab=masbaha",
-      "icons": [
-        {
-          "src": "icon-96x96.png",
-          "sizes": "96x96"
-        }
-      ]
-    },
-    {
-      "name": "الدعاء",
-      "short_name": "الدعاء",
-      "description": "فتح قسم الأدعية",
-      "url": "./?tab=dua",
-      "icons": [
-        {
-          "src": "icon-96x96.png",
-          "sizes": "96x96"
-        }
-      ]
+      "icons": [{ "src": "icon-96x96.png", "sizes": "96x96" }]
     }
   ]
 }
