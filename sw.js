@@ -1,9 +1,9 @@
 /**
- * Service Worker - V5.1 (Dedicated Version)
- * Optimized for Sabry Kamel Selim Memorial
+ * Service Worker - V6 (Features Update)
+ * Sabry Kamel Selim Memorial
  */
 
-const CACHE_NAME = 'masbaha-sabry-v5.1';
+const CACHE_NAME = 'sabry-memorial-v6';
 const STATIC_ASSETS = [
   './',
   './index.html',
@@ -33,7 +33,7 @@ self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
 
-  // استثناء روابط العداد من الكاش
+  // استثناء العداد من الكاش لضمان احتساب الزيارات
   if (url.hostname.includes('countapi')) return;
 
   event.respondWith(
@@ -48,3 +48,4 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+                                     
