@@ -8,88 +8,83 @@ const STATIC_ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  'https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Amiri:wght@400;700&display=swap',
-  'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js',
-  './icon-72x72.png',
-  './icon-96x96.png',
-  './icon-128x128.png',
-  './icon-144x144.png',
-  './icon-152x152.png',
   './icon-192x192.png',
-  './icon-384x384.png',
-  './icon-512x512.png'
+  'https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Amiri:wght@400;700&display=swap',
+  'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js'
 ];
 
-// Install - Cache static assets
+// Install
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        return cache.addAll(STATIC_ASSETS);
+      })
+      .catch((err) => console.error('[SW] Cache failed:', err))
   );
   self.skipWaiting();
 });
 
-// Activate - Clean up old caches
+// Activate
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.map((key) => (key !== CACHE_NAME ? caches.delete(key) : null)))
-    )
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames
+          .filter((name) => name !== CACHE_NAME)
+          .map((name) => caches.delete(name))
+      );
+    })
   );
   self.clients.claim();
 });
 
-// Fetch - Cache first
+// Fetch
 self.addEventListener('fetch', (event) => {
-  const req = event.request;
-
-  // Only handle GET
-  if (req.method !== 'GET') return;
+  if (event.request.method !== 'GET') return;
+  
+  const url = new URL(event.request.url);
+  const isExternal = url.origin !== self.location.origin;
+  
+  // السماح بموارد خارجية محددة (جوجل، إعلانات، عداد)
+  const isAllowedExternal = 
+    url.hostname.includes('google') ||
+    url.hostname.includes('gstatic') ||
+    url.hostname.includes('jsdelivr') ||
+    url.hostname.includes('countapi');
+  
+  if (isExternal && !isAllowedExternal) return;
 
   event.respondWith(
-    caches.match(req).then((cached) => {
-      if (cached) return cached;
-
-      return fetch(req)
-        .then((res) => {
-          // Cache successful responses
-          const resClone = res.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(req, resClone));
-          return res;
-        })
-        .catch(() => {
-          // Fallback to index if navigation fails offline
-          if (req.mode === 'navigate') {
-            return caches.match('./index.html');
-          }
-          return cached;
-        });
-    })
+    caches.match(event.request)
+      .then((cachedResponse) => {
+        if (cachedResponse) {
+          fetch(event.request)
+            .then((networkResponse) => {
+              if (networkResponse && networkResponse.status === 200) {
+                caches.open(CACHE_NAME).then((cache) => {
+                  cache.put(event.request, networkResponse.clone());
+                });
+              }
+            }).catch(() => {});
+          return cachedResponse;
+        }
+        
+        return fetch(event.request)
+          .then((networkResponse) => {
+            if (!networkResponse || networkResponse.status !== 200) return networkResponse;
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+            return networkResponse;
+          });
+      })
+      .catch(() => {
+        if (event.request.mode === 'navigate') {
+          return caches.match('./index.html');
+        }
+      })
   );
 });
-
-// Push notifications (optional)
-self.addEventListener('push', (event) => {
-  let options = {
-    body: event.data?.text() || 'تذكير بالدعاء للمرحوم',
-    icon: './icon-192x192.png',
-    badge: './icon-72x72.png',
-    dir: 'rtl',
-    lang: 'ar',
-    vibrate: [100, 50, 100],
-    data: {
-      url: self.registration.scope
-    }
-  };
-
-  event.waitUntil(
-    self.registration.showNotification('صدقة جارية', options)
-  );
-});
-
-// Handle notification click
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  event.waitUntil(
-    clients.openWindow(event.notification.data?.url || self.registration.scope)
-  );
-});
+                        
