@@ -3,24 +3,27 @@
  * Cache-first strategy for offline support
  */
 
-const CACHE_NAME = 'sabry-memorial-v2';
+const CACHE_NAME = 'sabry-memorial-v3';
 const STATIC_ASSETS = [
   './',
   './index.html',
   './manifest.json',
   'https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Amiri:wght@400;700&display=swap',
-  'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js'
+  'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js',
+  './icon-72x72.png',
+  './icon-96x96.png',
+  './icon-128x128.png',
+  './icon-144x144.png',
+  './icon-152x152.png',
+  './icon-192x192.png',
+  './icon-384x384.png',
+  './icon-512x512.png'
 ];
 
 // Install - Cache static assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('[SW] Caching static assets');
-        return cache.addAll(STATIC_ASSETS);
-      })
-      .catch((err) => console.error('[SW] Cache failed:', err))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
   );
   self.skipWaiting();
 });
@@ -28,83 +31,45 @@ self.addEventListener('install', (event) => {
 // Activate - Clean up old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames
-          .filter((name) => name !== CACHE_NAME)
-          .map((name) => {
-            console.log('[SW] Deleting old cache:', name);
-            return caches.delete(name);
-          })
-      );
-    })
+    caches.keys().then((keys) =>
+      Promise.all(keys.map((key) => (key !== CACHE_NAME ? caches.delete(key) : null)))
+    )
   );
   self.clients.claim();
 });
 
-// Fetch - Cache-first strategy
+// Fetch - Cache first
 self.addEventListener('fetch', (event) => {
-  // Skip non-GET requests
-  if (event.request.method !== 'GET') return;
-  
-  // Skip cross-origin requests (except fonts and CDN)
-  const url = new URL(event.request.url);
-  const isExternal = url.origin !== self.location.origin;
-  const isAllowedExternal = 
-    url.hostname === 'fonts.googleapis.com' ||
-    url.hostname === 'fonts.gstatic.com' ||
-    url.hostname === 'cdn.jsdelivr.net';
-  
-  if (isExternal && !isAllowedExternal) return;
+  const req = event.request;
+
+  // Only handle GET
+  if (req.method !== 'GET') return;
 
   event.respondWith(
-    caches.match(event.request)
-      .then((cachedResponse) => {
-        // Return cached version if available
-        if (cachedResponse) {
-          // Fetch update in background
-          fetch(event.request)
-            .then((networkResponse) => {
-              if (networkResponse && networkResponse.status === 200) {
-                caches.open(CACHE_NAME).then((cache) => {
-                  cache.put(event.request, networkResponse.clone());
-                });
-              }
-            })
-            .catch(() => {});
-          
-          return cachedResponse;
-        }
-        
-        // Fetch from network
-        return fetch(event.request)
-          .then((networkResponse) => {
-            if (!networkResponse || networkResponse.status !== 200) {
-              return networkResponse;
-            }
-            
-            // Cache successful responses
-            const responseToCache = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-            
-            return networkResponse;
-          });
-      })
-      .catch((error) => {
-        console.error('[SW] Fetch failed:', error);
-        // Return fallback for navigation
-        if (event.request.mode === 'navigate') {
-          return caches.match('./index.html');
-        }
-      })
+    caches.match(req).then((cached) => {
+      if (cached) return cached;
+
+      return fetch(req)
+        .then((res) => {
+          // Cache successful responses
+          const resClone = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, resClone));
+          return res;
+        })
+        .catch(() => {
+          // Fallback to index if navigation fails offline
+          if (req.mode === 'navigate') {
+            return caches.match('./index.html');
+          }
+          return cached;
+        });
+    })
   );
 });
 
-// Handle push notifications (future feature)
+// Push notifications (optional)
 self.addEventListener('push', (event) => {
-  const options = {
+  let options = {
     body: event.data?.text() || 'تذكير بالدعاء للمرحوم',
     icon: './icon-192x192.png',
     badge: './icon-72x72.png',
@@ -112,12 +77,12 @@ self.addEventListener('push', (event) => {
     lang: 'ar',
     vibrate: [100, 50, 100],
     data: {
-      url: self.location.origin
+      url: self.registration.scope
     }
   };
-  
+
   event.waitUntil(
-    self.registration.showNotification('المرحوم صبري كامل سليم', options)
+    self.registration.showNotification('صدقة جارية', options)
   );
 });
 
@@ -125,6 +90,6 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   event.waitUntil(
-    clients.openWindow(event.notification.data?.url || '/')
+    clients.openWindow(event.notification.data?.url || self.registration.scope)
   );
 });
