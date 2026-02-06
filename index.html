@@ -4,579 +4,363 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#1e3c72">
-    <meta name="description" content="صدقة جارية عن روح المرحوم صبري كامل سليم - مسبحة ذكية وأدعية">
-    <meta name="keywords" content="صدقة جارية, مسبحة إلكترونية, دعاء للمتوفى, سورة يس">
+    <meta name="description" id="metaDescription" content="صدقة جارية ومسبحة إلكترونية">
     
-    <!-- Open Graph -->
-    <meta property="og:title" content="المرحوم صبري كامل سليم - صدقة جارية">
-    <meta property="og:description" content="مسبحة ذكية وأدعية وصدقة جارية عن روح المرحوم صبري كامل سليم">
-    <meta property="og:image" content="icon-512x512.png">
-    <meta property="og:url" content="https://yosef243.github.io/Saber/">
+    <meta property="og:title" content="صدقة جارية | مسبحة ذكية">
     <meta property="og:type" content="website">
     
-    <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192x192.png">
     
-    <title>المرحوم صبري كامل سليم - صدقة جارية</title>
+    <title id="pageTitle">صدقة جارية | مسبحة ذكية</title>
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            font-family: 'Tajawal', sans-serif;
+        :root {
+            --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.15);
+            --text-gold: #ffd700;
+            --font-main: 'Tajawal', sans-serif;
+            --font-quran: 'Amiri', serif;
+            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
         
         body {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            font-family: var(--font-main);
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: white;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
-            color: white;
             overflow-x: hidden;
-            user-select: none;
-            touch-action: manipulation;
-        }
-        
-        .container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 20px;
-            width: 100%;
-            max-width: 500px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            color: #333;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(30, 60, 114, 0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-        }
-        
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .content {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .name {
-            font-family: 'Amiri', serif;
-            font-size: 2rem;
-            font-weight: 700;
-            color: #1e3c72;
-            margin-bottom: 5px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-        
-        .subtitle {
-            font-size: 1.1rem;
-            color: #555;
-            margin-bottom: 15px;
-            font-weight: 500;
-        }
-        
-        .tabs {
             display: flex;
-            background: #f0f0f0;
-            border-radius: 15px;
-            padding: 5px;
-            margin-bottom: 20px;
-            gap: 5px;
-        }
-        
-        .tab {
-            flex: 1;
-            padding: 12px;
-            text-align: center;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-        
-        .tab.active {
-            background: #1e3c72;
-            color: white;
-            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.3);
-        }
-        
-        .tab:not(.active):hover {
-            background: rgba(30, 60, 114, 0.1);
-        }
-        
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .prayer-section {
-            background: rgba(30, 60, 114, 0.05);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border: 1px solid rgba(30, 60, 114, 0.1);
-        }
-        
-        .prayer-title {
-            font-size: 1.3rem;
-            color: #1e3c72;
-            margin-bottom: 10px;
-            font-weight: 700;
-            text-align: center;
-        }
-        
-        .prayer-text {
-            font-family: 'Amiri', serif;
-            font-size: 1.2rem;
-            line-height: 2;
-            text-align: center;
-            color: #333;
-            margin-bottom: 15px;
-        }
-        
-        .tasbih-counter {
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .counter-display {
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: #1e3c72;
-            margin: 20px 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-            position: relative;
-        }
-        
-        .counter-label {
-            font-size: 1.1rem;
-            color: #555;
-            margin-bottom: 20px;
-            font-weight: 600;
-        }
-        
-        .counter-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        
-        .btn {
-            padding: 15px 25px;
-            border: none;
-            border-radius: 15px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
-            min-width: 120px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-        }
-        
-        .btn-secondary {
-            background: #f0f0f0;
-            color: #1e3c72;
-            border: 2px solid #1e3c72;
-        }
-        
-        .btn:active {
-            transform: scale(0.95);
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-        
-        .tasbih-options {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .tasbih-option {
-            padding: 12px;
-            background: white;
-            border: 2px solid rgba(30, 60, 114, 0.2);
-            border-radius: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-        
-        .tasbih-option.active {
-            background: #1e3c72;
-            color: white;
-            border-color: #1e3c72;
-        }
-        
-        .tasbih-option:hover {
-            border-color: #1e3c72;
-            transform: translateY(-1px);
-        }
-        
-        .visitor-counter {
-            text-align: center;
-            background: rgba(30, 60, 114, 0.1);
-            padding: 15px;
-            border-radius: 15px;
-            margin-top: 20px;
-        }
-        
-        .visitor-text {
-            font-size: 1rem;
-            color: #1e3c72;
-            font-weight: 600;
-        }
-        
-        .visitor-number {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #1e3c72;
-            margin-top: 5px;
-        }
-        
-        .share-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .share-btn {
-            padding: 10px 15px;
-            border-radius: 12px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .whatsapp {
-            background: #25D366;
-            color: white;
-        }
-        
-        .facebook {
-            background: #1877F2;
-            color: white;
-        }
-        
-        .copy {
-            background: #6c757d;
-            color: white;
-        }
-        
-        .share-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        
-        .toast {
+
+        /* Create Button */
+        .create-floating-btn {
             position: fixed;
-            top: 20px;
+            bottom: 20px;
             right: 20px;
-            background: #1e3c72;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 15px 20px;
-            border-radius: 15px;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-            z-index: 1000;
-            font-weight: 600;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            z-index: 99;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
         }
         
-        .toast.show {
-            transform: translateX(0);
-        }
+        .create-floating-btn:hover { background: rgba(255, 255, 255, 0.25); transform: translateY(-2px); }
+
+        /* Form Styles */
+        .form-group { margin-bottom: 20px; text-align: right; }
+        .form-label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-gold); }
+        .form-input { width: 100%; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; font-family: var(--font-main); font-size: 1rem; }
+        .form-input:focus { border-color: var(--text-gold); background: rgba(0,0,0,0.3); }
+
+        .generated-link-box { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; word-break: break-all; font-size: 0.85rem; margin: 15px 0; border: 1px dashed rgba(255,255,255,0.3); display: none; }
+
+        /* General Styles */
+        header { text-align: center; padding: 30px 20px 15px; position: relative; z-index: 1; }
+        .deceased-name { font-size: clamp(1.5rem, 5vw, 2rem); font-weight: 800; color: var(--text-gold); text-shadow: 0 2px 15px rgba(0,0,0,0.4); margin-bottom: 8px; }
+        .deceased-doa { font-size: clamp(0.9rem, 3vw, 1.1rem); opacity: 0.95; }
+        .deceased-date { font-size: 0.85rem; opacity: 0.8; margin-top: 10px; }
+
+        .fab-share { position: fixed; bottom: 20px; left: 20px; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #25D366, #128c7e); border: none; color: white; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4); z-index: 99; display: flex; align-items: center; justify-content: center; }
+
+        .tabs-container { width: 95%; max-width: 600px; display: flex; justify-content: space-between; background: rgba(0,0,0,0.25); backdrop-filter: blur(15px); padding: 6px; margin-top: 15px; border-radius: 50px; position: sticky; top: 10px; z-index: 100; border: 1px solid rgba(255,255,255,0.1); }
+        .tab-btn { background: none; border: none; color: rgba(255,255,255,0.7); font-family: var(--font-main); padding: 12px 8px; border-radius: 40px; flex: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 0.85rem;}
+        .tab-btn.active { background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85)); color: #1e3c72; font-weight: 700; }
         
-        @media (max-width: 480px) {
-            .container {
-                padding: 15px;
-                border-radius: 15px;
-            }
-            
-            .name {
-                font-size: 1.7rem;
-            }
-            
-            .counter-display {
-                font-size: 3rem;
-            }
-            
-            .btn {
-                padding: 12px 20px;
-                font-size: 1rem;
-                min-width: 100px;
-            }
-            
-            .tasbih-options {
-                grid-template-columns: 1fr;
-            }
-        }
+        main { width: 100%; max-width: 600px; padding: 20px; padding-bottom: 100px; }
+        .tab-content { display: none; animation: fadeEffect 0.4s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeEffect { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .card { background: var(--glass-bg); backdrop-filter: blur(15px); border: var(--glass-border); border-radius: 24px; padding: 25px; margin-bottom: 20px; box-shadow: var(--shadow-soft); position: relative; }
+        
+        .dhikr-text { font-family: var(--font-quran); font-size: clamp(1.6rem, 5vw, 2.2rem); color: var(--text-gold); min-height: 80px; display: flex; align-items: center; justify-content: center; text-align: center; margin-bottom: 25px; font-weight: 700; }
+        .counter-wrapper { position: relative; width: 220px; height: 220px; margin: 0 auto 30px; }
+        .counter-circle { width: 100%; height: 100%; border-radius: 50%; background: rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; cursor: pointer; user-select: none; box-shadow: 0 10px 40px rgba(0,0,0,0.3); overflow: hidden; }
+        .counter-progress { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(var(--text-gold) var(--progress, 0%), transparent 0); z-index: 0; transition: background 0.2s ease; }
+        .counter-circle::before { content: ''; position: absolute; width: 195px; height: 195px; background: linear-gradient(145deg, #23457e, #1a3560); border-radius: 50%; z-index: 1; }
+        .counter-content { position: relative; z-index: 2; text-align: center; }
+        .main-number { font-size: 4.5rem; font-weight: 800; background: linear-gradient(180deg, white, rgba(255,255,255,0.8)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .batch-number { font-size: 1rem; color: rgba(255,255,255,0.7); margin-top: 5px; }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content { background: linear-gradient(145deg, #1e3c72, #2a5298); border: 1px solid rgba(255,255,255,0.2); border-radius: 24px; padding: 25px; width: 90%; max-width: 400px; text-align: center; transform: scale(0.9); transition: transform 0.3s ease; overflow-y: auto; max-height: 90vh; }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-title { font-size: 1.4rem; margin-bottom: 20px; color: white; font-weight: 700; }
+        
+        .btn-primary { background: var(--text-gold); color: #1e3c72; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 10px; font-family: var(--font-main); }
+        .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 10px 20px; border-radius: 12px; cursor: pointer; margin-top: 10px; width: 100%; font-family: var(--font-main); }
+        .hidden { display: none !important; }
+
+        /* مكان الإعلان */
+        .ad-container { margin: 15px 0; min-height: 100px; background: rgba(255,255,255,0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: rgba(255,255,255,0.4); border: 1px dashed rgba(255,255,255,0.2); }
     </style>
 </head>
 <body>
-    <div class="toast" id="toast"></div>
-    
-    <div class="container">
-        <div class="content">
-            <div class="header">
-                <h1 class="name">المرحوم صبري كامل سليم</h1>
-                <p class="subtitle">صدقة جارية عن روحه الطاهرة</p>
-            </div>
-            
-            <div class="tabs">
-                <div class="tab active" data-tab="dua">الدعاء</div>
-                <div class="tab" data-tab="masbaha">المسبحة</div>
-                <div class="tab" data-tab="quran">القرآن</div>
-                <div class="tab" data-tab="share">المشاركة</div>
-            </div>
-            
-            <!-- دعاء -->
-            <div class="tab-content active" id="dua">
-                <div class="prayer-section">
-                    <h2 class="prayer-title">دعاء للمرحوم</h2>
-                    <div class="prayer-text">
-                        اللهم اغفر له وارحمه، وعافه واعف عنه، وأكرم نزله، ووسع مدخله، واغسله بالماء والثلج والبرد، ونقه من الخطايا كما ينقى الثوب الأبيض من الدنس
+
+    <header>
+        <div class="deceased-name" id="dispName">المرحوم صبري كامل سليم</div>
+        <div class="deceased-doa">رحمه الله تعالى وأسكنه فسيح جناته</div>
+        <div class="deceased-date" id="dispDate">٣ يناير ٢٠٢٦ م</div>
+    </header>
+
+    <button class="fab-share" onclick="openShareModal()" title="مشاركة">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+    </button>
+
+    <button class="create-floating-btn" onclick="openCreateModal()">
+        <span>+</span> أنشئ لفقيدك
+    </button>
+
+    <nav class="tabs-container">
+        <button class="tab-btn active" onclick="switchTab('masbaha', this)"><span>📿</span> المسبحة</button>
+        <button class="tab-btn" onclick="switchTab('dua', this)"><span>🤲</span> الدعاء</button>
+        <button class="tab-btn" onclick="switchTab('yasin', this)"><span>📖</span> يس</button>
+        <button class="tab-btn" onclick="switchTab('verses', this)"><span>✨</span> آيات</button>
+    </nav>
+
+    <main>
+        <div id="masbaha" class="tab-content active">
+            <div class="card" style="text-align: center;">
+                <div class="dhikr-text" id="dhikrText">سُبْحَانَ اللَّهِ</div>
+                <div class="counter-wrapper">
+                    <div class="counter-progress" id="progressRing"></div>
+                    <div class="counter-circle" id="circleBtn" onclick="incrementCounter()">
+                        <div class="counter-content">
+                            <div class="main-number" id="totalCounter">0</div>
+                            <div class="batch-number" id="batchCounter">0 / 33</div>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="prayer-section">
-                    <h2 class="prayer-title">دعاء الرحمة</h2>
-                    <div class="prayer-text">
-                        اللهم اجعل قبره روضة من رياض الجنة، ولا تجعله حفرة من حفر النار، اللهم اجعل في قبره نوراً، وفي جسمه نوراً، وفي سمعه نوراً، وفي بصره نوراً
-                    </div>
+                <button class="btn-outline" onclick="confirmReset()" style="width: auto; padding: 8px 20px; font-size: 0.9rem;">تصفير العداد</button>
+            </div>
+        </div>
+
+        <div id="dua" class="tab-content">
+            <div class="card">
+                <div class="resizable-text" style="line-height: 2; text-align: justify; font-size: 1.2rem;" id="duaText">
+                    اللهم اغفر <span class="dynamic-name-text">للمرحوم صبري كامل سليم</span> وارحمه برحمتك الواسعة، وأسكنه فسيح جناتك، واجعل قبره روضة من رياض الجنة. اللهم اغسله بالماء والثلج والبرد، ونقه من الذنوب والخطايا كما ينقى الثوب الأبيض من الدنس.
                 </div>
             </div>
-            
-            <!-- مسبحة -->
-            <div class="tab-content" id="masbaha">
-                <div class="tasbih-counter">
-                    <div class="counter-label" id="tasbihText">سبحان الله</div>
-                    <div class="counter-display" id="counter">0</div>
-                    
-                    <div class="tasbih-options">
-                        <div class="tasbih-option active" data-text="سبحان الله">سبحان الله</div>
-                        <div class="tasbih-option" data-text="الحمد لله">الحمد لله</div>
-                        <div class="tasbih-option" data-text="لا إله إلا الله">لا إله إلا الله</div>
-                        <div class="tasbih-option" data-text="الله أكبر">الله أكبر</div>
-                    </div>
-                    
-                    <div class="counter-buttons">
-                        <button class="btn btn-primary" id="incrementBtn">+ تسبيح</button>
-                        <button class="btn btn-secondary" id="resetBtn">إعادة</button>
-                    </div>
+        </div>
+
+        <div id="yasin" class="tab-content">
+            <div class="card">
+                <div class="surah-title" style="text-align: center; font-family: var(--font-quran); font-size: 1.5rem; margin-bottom: 15px; color: var(--text-gold);">سورة يس</div>
+                <div style="text-align: center; line-height: 2; font-family: var(--font-quran); font-size: 1.1rem;">
+                    بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ<br>
+                    يس (1) وَالْقُرْآنِ الْحَكِيمِ (2) إِنَّكَ لَمِنَ الْمُرْسَلِينَ (3) عَلَىٰ صِرَاطٍ مُسْتَقِيمٍ (4)
+                </div>
+                <button class="btn-outline" onclick="window.open('https://quran.com/ar/36', '_blank')" style="margin-top: 20px;">قراءة السورة كاملة</button>
+            </div>
+        </div>
+
+        <div id="verses" class="tab-content">
+            <div class="card">
+                <div style="text-align: center; margin-bottom: 15px;">آيات للسكينة</div>
+                <div style="font-family: var(--font-quran); line-height: 2; text-align: center;">
+                    "يَا أَيَّتُهَا النَّفْسُ الْمُطْمَئِنَّةُ ارْجِعِي إِلَىٰ رَبِّكِ رَاضِيَةً مَرْضِيَّةً"
                 </div>
             </div>
+        </div>
+    </main>
+
+    <footer>
+        <div style="font-size: 0.9rem;">صدقة جارية عن روح <span class="dynamic-name-text">المرحوم صبري كامل سليم</span></div>
+        <div class="footer-doa" style="margin-top:5px; opacity:0.7;">اللهم تقبل منا</div>
+        
+        <div style="margin-top: 15px; font-size: 0.8rem; opacity: 0.5; direction: ltr;">
+            <span id="visits">--</span> :Visits
+        </div>
+    </footer>
+
+    <div class="modal-overlay" id="createModal">
+        <div class="modal-content">
+            <div class="modal-title">أنشئ صفحة لفقيدك</div>
             
-            <!-- قرآن -->
-            <div class="tab-content" id="quran">
-                <div class="prayer-section">
-                    <h2 class="prayer-title">سورة يس</h2>
-                    <div class="prayer-text">
-                        بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ يس ۝ وَالْقُرْآنِ الْحَكِيمِ ۝ إِنَّكَ لَمِنَ الْمُرْسَلِينَ ۝ عَلَىٰ صِرَاطٍ مُّسْتَقِيمٍ ۝ تَنزِيلَ الْعَزِيزِ الرَّحِيمِ ۝
-                    </div>
-                    <div style="text-align:center;color:#777;font-size:0.95rem;">
-                        (يمكنك قراءة السورة كاملة من المصحف)
-                    </div>
-                </div>
+            <div class="ad-container">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                     data-ad-slot="YYYYYYYYYY"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+                <span>مساحة إعلانية (تظهر هنا فقط)</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label">الاسم</label>
+                <input type="text" id="inputName" class="form-input" placeholder="مثال: المرحوم فلان الفلاني">
+            </div>
+            <div class="form-group">
+                <label class="form-label">التاريخ (اختياري)</label>
+                <input type="text" id="inputDate" class="form-input" placeholder="مثال: ١٤٤٧ هـ">
             </div>
             
-            <!-- مشاركة -->
-            <div class="tab-content" id="share">
-                <div class="prayer-section">
-                    <h2 class="prayer-title">شارك الصدقة الجارية</h2>
-                    <div class="prayer-text">
-                        ساهم في نشر الخير وشارك هذا الرابط مع من تحب ليقرأ الدعاء ويسبح للمرحوم
-                    </div>
-                    
-                    <div class="share-buttons">
-                        <button class="share-btn whatsapp" id="whatsappShare">واتساب</button>
-                        <button class="share-btn facebook" id="facebookShare">فيسبوك</button>
-                        <button class="share-btn copy" id="copyLink">نسخ الرابط</button>
-                    </div>
-                </div>
+            <button class="btn-primary" onclick="generateLink()">إنشاء الرابط</button>
+            
+            <div id="generatedSection" class="hidden">
+                <div class="generated-link-box" id="resultLink"></div>
+                <button class="btn-primary" style="background: #25D366; color: white;" onclick="shareGeneratedWhatsApp()">مشاركة عبر واتساب</button>
+                <button class="btn-outline" onclick="copyGeneratedLink()">نسخ الرابط</button>
+                <button class="btn-outline" onclick="openGeneratedLink()">فتح الصفحة</button>
             </div>
             
-            <!-- عداد زوار -->
-            <div class="visitor-counter">
-                <div class="visitor-text">عدد الزيارات</div>
-                <div class="visitor-number" id="visitorCounter">جاري التحميل...</div>
-            </div>
+            <button class="btn-outline" onclick="closeCreateModal()" style="border:none; opacity:0.6;">إغلاق</button>
         </div>
     </div>
 
-    <script>
-        // PWA Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(registration => {
-                        console.log('SW registered:', registration);
-                    })
-                    .catch(error => {
-                        console.log('SW registration failed:', error);
-                    });
-            });
-        }
-
-        // Tabs
-        const tabs = document.querySelectorAll('.tab');
-        const tabContents = document.querySelectorAll('.tab-content');
-
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const targetTab = tab.getAttribute('data-tab');
-                
-                tabs.forEach(t => t.classList.remove('active'));
-                tabContents.forEach(content => content.classList.remove('active'));
-                
-                tab.classList.add('active');
-                document.getElementById(targetTab).classList.add('active');
-            });
-        });
-
-        // Tasbih Counter
+    <div class="modal-overlay" id="shareModal">
+        <div class="modal-content">
+            <div class="modal-title">مشاركة الصفحة</div>
+            <p style="margin-bottom: 20px; font-size: 0.9rem; opacity: 0.8;">انشر هذا الرابط بنية الصدقة الجارية</p>
+            <button class="btn-primary" style="background: #25D366; color: white;" onclick="shareCurrentWhatsApp()">مشاركة عبر واتساب</button>
+            <button class="btn-outline" onclick="copyCurrentLink()">نسخ الرابط</button>
+            <button class="btn-outline" onclick="closeShareModal()" style="border: none;">إلغاء</button>
+        </div>
+    </div>
+        <script>
+        const DEFAULT_CONFIG = {
+            name: "المرحوم صبري كامل سليم",
+            date: "٣ يناير ٢٠٢٦ م"
+        };
+        let currentConfig = { ...DEFAULT_CONFIG };
         let count = 0;
-        const counterDisplay = document.getElementById('counter');
-        const incrementBtn = document.getElementById('incrementBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const tasbihText = document.getElementById('tasbihText');
-        const tasbihOptions = document.querySelectorAll('.tasbih-option');
+        const TARGET = 33;
 
-        incrementBtn.addEventListener('click', () => {
-            count++;
-            counterDisplay.textContent = count;
-            
-            // Confetti effect on milestones
-            if (count % 33 === 0) {
-                confetti({
-                    particleCount: 50,
-                    spread: 60,
-                    origin: { y: 0.7 }
-                });
-                showToast(`ماشاء الله! ${count} تسبيحة`);
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('name')) {
+                currentConfig.name = urlParams.get('name');
+                currentConfig.storageKey = 'tasbeeh_' + btoa(encodeURIComponent(currentConfig.name)).substring(0, 15);
+            } else {
+                currentConfig.storageKey = 'tasbeeh_sabry_default';
             }
-            
-            // Vibration feedback
-            if (navigator.vibrate) {
-                navigator.vibrate(50);
-            }
+            if (urlParams.get('date')) currentConfig.date = urlParams.get('date');
+
+            updatePageContent();
+            loadCounter();
+            updateVisitorCount(); // تشغيل العداد
+
+            if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(console.error);
         });
 
-        resetBtn.addEventListener('click', () => {
-            count = 0;
-            counterDisplay.textContent = count;
-            showToast('تم إعادة العدّاد');
-        });
-
-        tasbihOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                tasbihOptions.forEach(o => o.classList.remove('active'));
-                option.classList.add('active');
-                tasbihText.textContent = option.getAttribute('data-text');
-                showToast(`تم اختيار: ${option.getAttribute('data-text')}`);
-            });
-        });
-
-        // Toast
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+        function updatePageContent() {
+            document.getElementById('dispName').textContent = currentConfig.name;
+            document.getElementById('dispDate').textContent = currentConfig.date;
+            document.title = `${currentConfig.name} | صدقة جارية`;
+            document.querySelectorAll('.dynamic-name-text').forEach(el => el.textContent = currentConfig.name);
         }
 
-        // Share
-        const siteUrl = window.location.href;
-
-        document.getElementById('whatsappShare').addEventListener('click', () => {
-            const text = `صدقة جارية عن روح المرحوم صبري كامل سليم\n${siteUrl}`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-        });
-
-        document.getElementById('facebookShare').addEventListener('click', () => {
-            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(siteUrl)}`, '_blank');
-        });
-
-        document.getElementById('copyLink').addEventListener('click', () => {
-            navigator.clipboard.writeText(siteUrl).then(() => {
-                showToast('تم نسخ الرابط');
-            });
-        });
-
-        // Visitor Counter (CountAPI)
-        async function initVisitorCounter() {
+        /* ===== Unique Counter Logic ===== */
+        function updateVisitorCount() {
+            const counterElement = document.getElementById('visits');
+            let safeKey;
             try {
-                const namespace = 'sabry-memorial';
-                const key = 'total-visitors';
-                
-                const response = await fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`);
-                const data = await response.json();
-                
-                document.getElementById('visitorCounter').textContent = data.value.toLocaleString('ar-EG');
-            } catch (error) {
-                document.getElementById('visitorCounter').textContent = 'غير متاح';
-            }
+                // إنشاء مفتاح فريد يعتمد على الاسم لتجنب تداخل العدادات
+                safeKey = btoa(unescape(encodeURIComponent(currentConfig.name))).replace(/[^a-zA-Z0-9]/g, '').substring(0, 50);
+            } catch { safeKey = "default_sabry"; }
+            
+            // استخدم معرفاً خاصاً بمشروعك هنا بدلاً من 'sabry-memorial-v3' إذا أردت
+            fetch(`https://api.countapi.xyz/hit/sabry-memorial-pwa-v3/${safeKey}`)
+                .then(res => res.json())
+                .then(data => counterElement.innerText = data.value)
+                .catch(() => counterElement.innerText = "--");
         }
 
-        initVisitorCounter();
+        /* ===== Create & Share Logic ===== */
+        function openCreateModal() { 
+            document.getElementById('createModal').classList.add('active'); 
+            document.getElementById('generatedSection').classList.add('hidden');
+        }
+        function closeCreateModal() { document.getElementById('createModal').classList.remove('active'); }
+        
+        function generateLink() {
+            const name = document.getElementById('inputName').value.trim();
+            const date = document.getElementById('inputDate').value.trim();
+            if (!name) return alert('الرجاء كتابة الاسم');
+            
+            const params = new URLSearchParams();
+            params.set('name', name);
+            if (date) params.set('date', date);
+            
+            // استخدام رابط نسبي ليعمل في أي استضافة
+            const finalUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+            
+            document.getElementById('resultLink').textContent = finalUrl;
+            document.getElementById('generatedSection').classList.remove('hidden');
+        }
+
+        function copyGeneratedLink() { navigator.clipboard.writeText(document.getElementById('resultLink').textContent).then(() => alert('تم النسخ')); }
+        function openGeneratedLink() { window.location.href = document.getElementById('resultLink').textContent; }
+        function shareGeneratedWhatsApp() { window.open(`https://wa.me/?text=${encodeURIComponent('صدقة جارية: ' + document.getElementById('resultLink').textContent)}`, '_blank'); }
+
+        /* ===== Masbaha Logic ===== */
+        function incrementCounter() {
+            count++;
+            if (navigator.vibrate) navigator.vibrate(15);
+            if (count % TARGET === 0) {
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, disableForReducedMotion: true });
+                if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+            }
+            updateCounterUI();
+            localStorage.setItem(currentConfig.storageKey, count);
+        }
+        
+        function updateCounterUI() {
+            document.getElementById('totalCounter').textContent = count;
+            const batch = count % TARGET || (count > 0 && count % TARGET === 0 ? TARGET : 0);
+            document.getElementById('batchCounter').textContent = `${batch} / ${TARGET}`;
+            document.getElementById('progressRing').style.setProperty('--progress', `${(batch/TARGET)*100}%`);
+        }
+        
+        function loadCounter() {
+            const saved = localStorage.getItem(currentConfig.storageKey);
+            if (saved) count = parseInt(saved);
+            updateCounterUI();
+        }
+        
+        function confirmReset() { if(confirm('تصفير العداد؟')) { count = 0; updateCounterUI(); localStorage.setItem(currentConfig.storageKey, 0); } }
+
+        /* ===== UI Helpers ===== */
+        function switchTab(id, btn) {
+            document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(e => e.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(btn) btn.classList.add('active');
+        }
+        
+        function openShareModal() { document.getElementById('shareModal').classList.add('active'); }
+        function closeShareModal() { document.getElementById('shareModal').classList.remove('active'); }
+        function shareCurrentWhatsApp() { window.open(`https://wa.me/?text=${encodeURIComponent(window.location.href)}`, '_blank'); }
+        function copyCurrentLink() { navigator.clipboard.writeText(window.location.href).then(() => alert('تم النسخ')); }
     </script>
 </body>
-    </html>
+</html>
+
+
