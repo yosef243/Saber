@@ -1,9 +1,9 @@
 /**
- * Service Worker - V9 (Quran & Dua Update)
+ * Service Worker - V12 (Safe Caching)
  * Sabry Kamel Selim Memorial
  */
 
-const CACHE_NAME = 'sabry-memorial-v9';
+const CACHE_NAME = 'sabry-memorial-v12';
 const STATIC_ASSETS = [
   './',
   './index.html',
@@ -19,6 +19,7 @@ const DYNAMIC_ASSETS = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
+      // فقط تحميل الملفات الأساسية الصغيرة
       return Promise.all([
         cache.addAll(STATIC_ASSETS),
         ...DYNAMIC_ASSETS.map(url => fetch(url).then(res => cache.put(url, res)))
@@ -39,6 +40,8 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
+  
+  // استثناء العداد
   if (url.hostname.includes('countapi') || event.request.method !== 'GET') return;
   
   event.respondWith(
