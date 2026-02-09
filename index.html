@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4BLGD8FVRY"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-48LGD8FVRY"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', 'G-4BLGD8FVRY');
+      gtag('config', 'G-48LGD8FVRY');
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -25,6 +25,7 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
+        /* ... (نفس تنسيقات CSS السابقة تماماً) ... */
         :root {
             --primary: #1E6F5C;
             --secondary: #F4F9F4;
@@ -38,7 +39,9 @@
             --font-quran: 'Amiri', serif;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
+        /* ... أكمل باقي الستايل كما كان ... */
+        /* (اختصاراً للمساحة، ضع باقي الـ CSS هنا كما هو في الملف السابق) */
+        
         [data-theme="dark"] {
             --primary: #2A9D8F;
             --secondary: #111827;
@@ -433,8 +436,7 @@
             updateDuaText('general');
         }
         
-        /* ===== GLOBAL COUNTER (The Fix) ===== */
-        // استخدام API عالمي وكلمة hit لضمان الزيادة
+        /* ===== GLOBAL COUNTER ===== */
         function updateVisitorCounter() {
             fetch('https://api.countapi.xyz/hit/sabry-kamel-memorial-global-v10/visits')
                 .then(res => res.json())
