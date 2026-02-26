@@ -1,0 +1,27 @@
+# Java specific files
+*.class
+*.jar
+*.war
+*.ear
+*.class
+
+# Gradle specific files
+.gradle/
+build/
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# IDE-specific files
+.vscode/
+.idea/
+*.iml
+
+# OS-specific files
+.DS_Store
+Thumbs.db
