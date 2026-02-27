@@ -1,27 +1,14 @@
 /**
- * Service Worker - V2 (للمشروع الجديد)
+ * Service Worker - V9 (Quran & Dua Update)
+ * Sabry Kamel Selim Memorial
  */
 
-const CACHE_NAME = 'sabry-memorial-v2';
+const CACHE_NAME = 'sabry-memorial-v9';
 const STATIC_ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './css/style.css',
-  './js/app.js',
-  './js/masbaha.js',
-  './js/duas-azkar.js',
-  './js/storage.js',
-  './js/utils.js',
-  './data/content.js',
-  './assets/icons/icon-72x72.png',
-  './assets/icons/icon-96x96.png',
-  './assets/icons/icon-128x128.png',
-  './assets/icons/icon-144x144.png',
-  './assets/icons/icon-152x152.png',
-  './assets/icons/icon-192x192.png',
-  './assets/icons/icon-384x384.png',
-  './assets/icons/icon-512x512.png'
+  './icon-192x192.png'
 ];
 
 const DYNAMIC_ASSETS = [
@@ -32,15 +19,10 @@ const DYNAMIC_ASSETS = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS).then(() => {
-        return Promise.all(
-          DYNAMIC_ASSETS.map(url => 
-            fetch(url).then(res => {
-              if (res.ok) cache.put(url, res);
-            }).catch(() => {})
-          )
-        );
-      });
+      return Promise.all([
+        cache.addAll(STATIC_ASSETS),
+        ...DYNAMIC_ASSETS.map(url => fetch(url).then(res => cache.put(url, res)))
+      ]);
     })
   );
   self.skipWaiting();
@@ -61,23 +43,13 @@ self.addEventListener('fetch', (event) => {
   
   event.respondWith(
     caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-      
-      return fetch(event.request).then((response) => {
-        if (response.ok) {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+      const fetched = fetch(event.request).then((resp) => {
+        if (resp.ok) {
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, resp.clone()));
         }
-        return response;
-      }).catch(() => {
-        if (event.request.headers.get('accept').includes('text/html')) {
-          return new Response('أنت غير متصل بالإنترنت', {
-            status: 200,
-            headers: { 'Content-Type': 'text/html; charset=utf-8' }
-          });
-        }
-        return new Response('غير متصل', { status: 503 });
-      });
+        return resp;
+      }).catch(() => cached);
+      return cached || fetched;
     })
   );
 });
