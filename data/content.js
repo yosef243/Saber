@@ -435,3 +435,15 @@ console.log('[Content] Duas:', duas.deceased.length + duas.general.length, 'tota
 console.log('[Content] Morning Azkar:', azkar.morning.length);
 console.log('[Content] Evening Azkar:', azkar.evening.length);
 console.log('[Content] Dhikr Virtues:', dhikrVirtues.length);
+// أضف هذا في النهاية
+if (typeof window !== 'undefined') {
+  window.duas = duas;
+  window.azkar = azkar;
+  window.dhikrVirtues = dhikrVirtues;
+  window.appInfo = appInfo;
+}
+
+console.log('[Content] Module loaded');
+console.log('[Content] Duas:', duas.deceased.length + duas.general.length);
+console.log('[Content] Morning Azkar:', azkar.morning.length);
+console.log('[Content] Evening Azkar:', azkar.evening.length);
