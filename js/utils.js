@@ -1,24 +1,67 @@
-// js/utils/format.js
-export function clamp(n, min, max) {
-  return Math.min(max, Math.max(min, n));
+// دوال مساعدة عامة
+
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playClick() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.05);
+    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.05);
 }
 
-export function toIntSafe(value, fallback = 0) {
-  const n = Number.parseInt(String(value), 10);
-  return Number.isFinite(n) ? n : fallback;
+function vibrate(duration = 15) {
+    if (navigator.vibrate) navigator.vibrate(duration);
 }
 
-export function sanitizeInput(str) {
-  return String(str ?? '')
-    .replace(/[<>]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
+function launchConfetti() {
+    if (typeof confetti === 'function') {
+        confetti({
+            particleCount: 50,
+            spread: 60,
+            origin: { y: 0.6 },
+            colors: ['#1E6F5C', '#E9C46A']
+        });
+    }
 }
 
-export function formatArabicNumber(n) {
-  try {
-    return new Intl.NumberFormat('ar-EG').format(n);
-  } catch {
-    return String(n);
-  }
+function shareCurrentPage() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'المرحوم صبري كامل سليم',
+            url: window.location.href
+        });
+    } else {
+        window.open(`https://wa.me/?text=${encodeURIComponent(window.location.href)}`);
+    }
 }
+
+function toggleTheme() {
+    const isDark = document.body.getAttribute('data-theme') === 'dark';
+    document.body.setAttribute('data-theme', isDark ? '' : 'dark');
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+}
+
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        document.getElementById('themeBtn').textContent = '☀️';
+    } else {
+        document.getElementById('themeBtn').textContent = '🌙';
+    }
+}
+
+function showToast(message) {
+    alert(message);
+}
+
+window.shareCurrentPage = shareCurrentPage;
+window.toggleTheme = toggleTheme;
