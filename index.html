@@ -1,286 +1,150 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#1b5e20" />
-  <title>صدقة جارية - صبري كامل سليم</title>
-
-  <link rel="manifest" href="./manifest.json" />
-  <link rel="icon" href="./assets/icons/icon-192x192.png" />
-  <link rel="apple-touch-icon" href="./assets/icons/icon-192x192.png" />
-  <link rel="stylesheet" href="./css/style.css" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-48LGD8FVRY"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-48LGD8FVRY');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1E6F5C">
+    <meta name="description" content="صدقة جارية، قرآن كريم، وأدعية للمرحوم صبري كامل سليم">
+    <title>المرحوم صبري كامل سليم | صدقة جارية</title>
+    
+    <!-- Manifest and icons -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
-  <a class="skip-link" href="#main">تخطي إلى المحتوى</a>
+    <header class="fade-in-up" style="animation-delay: 0.1s;">
+        <div class="top-bar">
+            <button class="icon-btn" onclick="shareCurrentPage()" title="مشاركة">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/>
+                    <polyline points="16 6 12 2 8 6"/>
+                    <line x1="12" y1="2" x2="12" y2="15"/>
+                </svg>
+            </button>
+            <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="الوضع الليلي">🌙</button>
+        </div>
+        <div class="deceased-info">
+            <div style="font-size: 0.9rem; color: var(--text-sub);">صدقة جارية عن روح</div>
+            <div class="deceased-name">المرحوم صبري كامل سليم</div>
+            <div class="deceased-prayer">
+                اللهم ارحمه واغفر له واجعل قبره روضة من رياض الجنة واسكنه الفردوس الأعلى
+            </div>
+        </div>
+    </header>
 
-  <header class="app-header">
-    <div class="header-left">
-      <h1 class="app-title">صدقة جارية</h1>
-      <p class="app-subtitle">اللهم اغفر له وارحمه وعافه واعف عنه</p>
-    </div>
-
-    <div class="header-right">
-      <button id="btn-settings" class="icon-btn" type="button" aria-label="الإعدادات">⚙️</button>
-      <button id="btn-about" class="icon-btn" type="button" aria-label="حول التطبيق">ℹ️</button>
-    </div>
-  </header>
-
-  <!-- تحديث التطبيق -->
-  <div id="update-banner" class="update-banner hidden" role="status" aria-live="polite">
-    <span>يتوفر تحديث جديد للتطبيق.</span>
-    <div class="update-actions">
-      <button id="btn-update-now" class="btn btn-primary" type="button">تحديث الآن</button>
-      <button id="btn-update-later" class="btn btn-ghost" type="button">لاحقًا</button>
-    </div>
-  </div>
-
-  <main id="main" class="app-main">
-    <nav class="tabs" role="tablist" aria-label="أقسام التطبيق">
-      <button class="tab active" id="tab-masbaha" role="tab" aria-selected="true" aria-controls="panel-masbaha" tabindex="0">المسبحة</button>
-      <button class="tab" id="tab-duas" role="tab" aria-selected="false" aria-controls="panel-duas" tabindex="-1">الأدعية</button>
-      <button class="tab" id="tab-azkar" role="tab" aria-selected="false" aria-controls="panel-azkar" tabindex="-1">الأذكار</button>
-      <button class="tab" id="tab-quran" role="tab" aria-selected="false" aria-controls="panel-quran" tabindex="-1">القرآن</button>
-      <button class="tab" id="tab-privacy" role="tab" aria-selected="false" aria-controls="panel-privacy" tabindex="-1">الخصوصية</button>
+    <nav class="tabs-container fade-in-up" style="animation-delay: 0.2s;">
+        <button class="tab-btn active" onclick="switchTab('masbaha', this)">المسبحة</button>
+        <button class="tab-btn" onclick="switchTab('duas', this)">الأدعية</button> <!-- دمج الأدعية -->
+        <button class="tab-btn" onclick="switchTab('azkar', this)">الأذكار</button>
+        <button class="tab-btn" onclick="switchTab('quran', this)">القرآن</button>
     </nav>
 
-    <!-- ========== المسبحة ========== -->
-    <section id="panel-masbaha" class="panel active" role="tabpanel" aria-labelledby="tab-masbaha" tabindex="0">
-      <div class="card">
-        <div class="card-header">
-          <h2>المسبحة الإلكترونية</h2>
+    <main class="fade-in-up" style="animation-delay: 0.3s;">
+        <!-- المسبحة -->
+        <div id="masbaha" class="tab-content active">
+            <div class="card" style="text-align: center;">
+                <div class="dhikr-display" id="dhikrText">سُبْحَانَ اللَّهِ</div>
+                <div class="counter-container" onclick="incrementCounter()">
+                    <div class="counter-circle">
+                        <div class="count-num" id="totalCounter">0</div>
+                        <div style="font-size: 0.9rem; opacity: 0.9;" id="batchCounter">الدورة: 1</div>
+                    </div>
+                </div>
+                <button class="icon-btn" onclick="confirmReset()" style="font-size: 1rem; width: auto; border-radius: 8px;">تصفير ↺</button>
+            </div>
         </div>
 
-        <div class="masbaha-controls">
-          <label class="field">
-            <span class="field-label">الذكر الحالي</span>
-            <select id="masbaha-dhikr-select" class="select"></select>
-          </label>
-
-          <label class="field">
-            <span class="field-label">هدف الدورة</span>
-            <select id="masbaha-cycle-select" class="select">
-              <option value="33">33</option>
-              <option value="100">100</option>
-              <option value="1000">1000</option>
-              <option value="custom">مخصص…</option>
-            </select>
-          </label>
-
-          <div id="masbaha-cycle-custom-wrap" class="field hidden">
-            <span class="field-label">رقم مخصص</span>
-            <input id="masbaha-cycle-custom" class="input" inputmode="numeric" pattern="[0-9]*" placeholder="مثال: 40" />
-          </div>
+        <!-- الأدعية الموحدة -->
+        <div id="duas" class="tab-content">
+            <div class="card">
+                <div style="color: var(--accent); font-size: 1.4rem; text-align: center; margin-bottom: 15px; font-weight: 700;">الأدعية</div>
+                
+                <!-- أزرار اختيار نوع الدعاء -->
+                <div class="dua-type-toggle" style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;">
+                    <button class="dua-type-btn active" onclick="setDuaType('deceased')">للمتوفى</button>
+                    <button class="dua-type-btn" onclick="setDuaType('general')">أدعية عامة</button>
+                </div>
+                
+                <div class="dua-container">
+                    <div style="font-family: 'Amiri'; font-size: 1.3rem; line-height: 2.2; text-align: justify; color: var(--text-main);" id="duaText"></div>
+                </div>
+                <div class="dua-controls">
+                    <button class="nav-btn" onclick="changeDua(-1)">&#10095;</button>
+                    <button class="copy-btn" onclick="copyDua()"><span>نسخ الدعاء</span> 📋</button>
+                    <button class="nav-btn" onclick="changeDua(1)">&#10094;</button>
+                </div>
+                <div style="text-align: center; font-size: 0.8rem; color: var(--text-sub); margin-top: 10px;">
+                    <span id="duaCounter">1</span> / <span id="duaTotal"></span>
+                </div>
+            </div>
         </div>
 
-        <div class="masbaha-display">
-          <div class="counter-box">
-            <div class="counter-label">العدد</div>
-            <div id="masbaha-count" class="counter-value">0</div>
-          </div>
-          <div class="counter-box">
-            <div class="counter-label">إجمالي اليوم</div>
-            <div id="masbaha-total" class="counter-value">0</div>
-          </div>
-          <div class="counter-box">
-            <div class="counter-label">باقي للدورة</div>
-            <div id="masbaha-remaining" class="counter-value">33</div>
-          </div>
+        <!-- الأذكار -->
+        <div id="azkar" class="tab-content">
+            <div class="card">
+                <div class="azkar-toggle">
+                    <button class="azkar-opt active" onclick="toggleAzkar('morning', this)">أذكار الصباح ☀️</button>
+                    <button class="azkar-opt" onclick="toggleAzkar('evening', this)">أذكار المساء 🌙</button>
+                </div>
+                <div id="azkarList"></div>
+            </div>
         </div>
 
-        <div class="masbaha-actions">
-          <button id="masbaha-inc" class="btn btn-primary btn-lg" type="button">سبّح</button>
-          <button id="masbaha-reset" class="btn btn-ghost" type="button">تصفير</button>
-          <button id="masbaha-session-end" class="btn btn-ghost" type="button">إنهاء جلسة</button>
+        <!-- القرآن -->
+        <div id="quran" class="tab-content">
+            <div class="card">
+                <div style="color: var(--accent); font-size: 1.4rem; text-align: center; margin-bottom: 15px; font-weight: 700;">القرآن الكريم</div>
+                <button class="quran-btn-lg" onclick="window.open('https://quran.com/ar', '_blank')">
+                    <span>📖</span> المصحف الإلكتروني كاملاً
+                </button>
+                <div style="margin-top: 20px;">
+                    <div style="font-size: 1rem; color: var(--text-sub); margin-bottom: 10px; font-weight: bold;">سور مختارة:</div>
+                    <a href="https://quran.com/ar/36" target="_blank" class="surah-link">
+                        <span>سورة يس</span> <span>📖</span>
+                    </a>
+                    <a href="https://quran.com/ar/67" target="_blank" class="surah-link">
+                        <span>سورة الملك</span> <span>📖</span>
+                    </a>
+                    <a href="https://quran.com/ar/18" target="_blank" class="surah-link">
+                        <span>سورة الكهف</span> <span>📖</span>
+                    </a>
+                    <a href="https://quran.com/ar/56" target="_blank" class="surah-link">
+                        <span>سورة الواقعة</span> <span>📖</span>
+                    </a>
+                </div>
+            </div>
         </div>
+    </main>
 
-        <details class="details">
-          <summary>سجل الجلسات</summary>
-          <div id="masbaha-sessions" class="sessions-list"></div>
-          <div class="sessions-actions">
-            <button id="masbaha-export" class="btn btn-ghost" type="button">تصدير البيانات</button>
-            <button id="masbaha-import" class="btn btn-ghost" type="button">استيراد البيانات</button>
-          </div>
-        </details>
-      </div>
-    </section>
-
-    <!-- ========== الأدعية ========== -->
-    <section id="panel-duas" class="panel" role="tabpanel" aria-labelledby="tab-duas" tabindex="0">
-      <div class="card">
-        <div class="card-header">
-          <h2>الأدعية</h2>
+    <footer>
+        <div style="margin-bottom: 10px;">اللهم تقبل منا واجعله في ميزان حسناته</div>
+        <div class="visitor-counter" title="عدد الزوار العالمي">
+            👥 عدد الزوار: <span id="visits">...</span>
         </div>
+    </footer>
 
-        <div class="list-toolbar">
-          <input id="duas-search" class="input" placeholder="ابحث في الأدعية…" />
-          <label class="chip">
-            <input id="duas-only-favs" type="checkbox" />
-            <span>المفضلة فقط</span>
-          </label>
-        </div>
-
-        <div id="duas-list" class="items-list"></div>
-      </div>
-    </section>
-
-    <!-- ========== الأذكار ========== -->
-    <section id="panel-azkar" class="panel" role="tabpanel" aria-labelledby="tab-azkar" tabindex="0">
-      <div class="card">
-        <div class="card-header">
-          <h2>الأذكار</h2>
-        </div>
-
-        <div class="list-toolbar">
-          <input id="azkar-search" class="input" placeholder="ابحث في الأذكار…" />
-          <label class="chip">
-            <input id="azkar-only-favs" type="checkbox" />
-            <span>المفضلة فقط</span>
-          </label>
-          <label class="field inline">
-            <span class="field-label">النوع</span>
-            <select id="azkar-type" class="select">
-              <option value="all">الكل</option>
-              <option value="morning">الصباح</option>
-              <option value="evening">المساء</option>
-              <option value="general">عامة</option>
-            </select>
-          </label>
-        </div>
-
-        <div id="azkar-list" class="items-list"></div>
-      </div>
-    </section>
-
-    <!-- ========== القرآن ========== -->
-    <section id="panel-quran" class="panel" role="tabpanel" aria-labelledby="tab-quran" tabindex="0">
-      <div class="card">
-        <div class="card-header">
-          <h2>القرآن</h2>
-        </div>
-
-        <p class="muted">
-          يتم فتح القرآن عبر مصدر خارجي. في حال عدم وجود إنترنت ستظهر رسالة تنبيه.
-        </p>
-
-        <div class="quran-actions">
-          <a class="btn btn-primary" href="https://quran.com" target="_blank" rel="noopener">فتح Quran.com</a>
-          <button id="quran-open-last" class="btn btn-ghost" type="button">فتح آخر صفحة</button>
-        </div>
-
-        <div class="field">
-          <span class="field-label">رابط مخصص (اختياري)</span>
-          <input id="quran-custom-url" class="input" placeholder="مثال: https://quran.com/2" />
-          <button id="quran-save-custom" class="btn btn-ghost" type="button">حفظ</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== الخصوصية ========== -->
-    <section id="panel-privacy" class="panel" role="tabpanel" aria-labelledby="tab-privacy" tabindex="0">
-      <div class="card">
-        <div class="card-header">
-          <h2>الخصوصية والإحصائيات</h2>
-        </div>
-
-        <p class="muted">
-          التطبيق يعمل بدون إنشاء حساب. بعض الميزات الاختيارية قد تستخدم أدوات قياس مجهولة لتحسين التجربة.
-        </p>
-
-        <label class="toggle">
-          <input id="analytics-optin" type="checkbox" />
-          <span>تفعيل الإحصائيات (اختياري)</span>
-        </label>
-
-        <div class="privacy-box">
-          <h3>ما الذي يتم حفظه محليًا؟</h3>
-          <ul>
-            <li>إعداداتك (الثيم، حجم الخط…)</li>
-            <li>سجل المسبحة/المفضلة (إذا فعلتها)</li>
-          </ul>
-
-          <h3>ماذا عن الإحصائيات؟</h3>
-          <ul>
-            <li>لن يتم إرسال أي شيء إلا إذا فعلت الخيار أعلاه.</li>
-          </ul>
-
-          <div class="privacy-actions">
-            <button id="btn-clear-local" class="btn btn-ghost" type="button">مسح البيانات المحلية</button>
-            <button id="btn-export-local" class="btn btn-ghost" type="button">تصدير البيانات</button>
-            <button id="btn-import-local" class="btn btn-ghost" type="button">استيراد البيانات</button>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- Toast container -->
-  <div id="toast-root" class="toast-root" aria-live="polite" aria-atomic="true"></div>
-
-  <!-- Settings Modal -->
-  <div id="modal-settings" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
-    <div class="modal-backdrop" data-close="1"></div>
-    <div class="modal-content" role="document">
-      <div class="modal-header">
-        <h2 id="settings-title">الإعدادات</h2>
-        <button class="icon-btn" type="button" aria-label="إغلاق" data-close="1">✕</button>
-      </div>
-
-      <div class="modal-body">
-        <label class="field">
-          <span class="field-label">الوضع</span>
-          <select id="theme-select" class="select">
-            <option value="system">حسب النظام</option>
-            <option value="light">فاتح</option>
-            <option value="dark">داكن</option>
-          </select>
-        </label>
-
-        <label class="field">
-          <span class="field-label">حجم الخط</span>
-          <input id="font-scale" class="input" type="range" min="14" max="24" step="1" />
-          <span id="font-scale-label" class="muted"></span>
-        </label>
-
-        <label class="toggle">
-          <input id="khushu-toggle" type="checkbox" />
-          <span>وضع الخشوع</span>
-        </label>
-
-        <label class="toggle">
-          <input id="sound-toggle" type="checkbox" />
-          <span>الصوت</span>
-        </label>
-
-        <label class="toggle">
-          <input id="vibrate-toggle" type="checkbox" />
-          <span>الاهتزاز</span>
-        </label>
-      </div>
-    </div>
-  </div>
-
-  <!-- About Modal -->
-  <div id="modal-about" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="about-title">
-    <div class="modal-backdrop" data-close="1"></div>
-    <div class="modal-content" role="document">
-      <div class="modal-header">
-        <h2 id="about-title">حول</h2>
-        <button class="icon-btn" type="button" aria-label="إغلاق" data-close="1">✕</button>
-      </div>
-
-      <div class="modal-body">
-        <p>تطبيق صدقة جارية — نسأل الله القبول.</p>
-        <p class="muted">الإصدار: <span id="app-version"></span></p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Content data -->
-  <script src="./data/content.js"></script>
-
-  <!-- App scripts -->
-  <script type="module" src="./js/app.js"></script>
+    <!-- Scripts -->
+    <script src="data/content.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/masbaha.js"></script>
+    <script src="js/duas-azkar.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
