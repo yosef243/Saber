@@ -1,75 +1,68 @@
-// ============================================
-// صدقة جارية - المرحوم صبري كامل سليم
-// Main App - نسخة مبسطة
-// ============================================
+let appState = {};
 
-console.log('[App] Starting...');
+function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+}
+window.switchTab = switchTab;
 
-// انتظر حتى تحميل الصفحة
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('[App] DOM Loaded');
-  
-  try {
-    // تحقق من وجود الوحدات
-    if (typeof Masbaha === 'undefined') {
-      console.error('[App] Masbaha module not found!');
-      return;
+function updateVisitorCounter() {
+    fetch('https://api.countapi.xyz/hit/sabry-kamel-memorial-global-v10/visits')
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('visits').textContent = data.value;
+        })
+        .catch(() => {
+            document.getElementById('visits').textContent = '...';
+        });
+}
+
+// PWA install
+let deferredPrompt;
+const installBtn = document.createElement('button');
+installBtn.id = 'installBtn';
+installBtn.textContent = '📲 تثبيت التطبيق';
+installBtn.onclick = () => {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => {
+            deferredPrompt = null;
+            installBtn.style.display = 'none';
+        });
     }
-    
-    if (typeof DuasAzkar === 'undefined') {
-      console.error('[App] DuasAzkar module not found!');
-      return;
-    }
-    
-    // تهيئة التبويبات
-    initTabs();
-    
-    // تهيئة الوحدات
-    Masbaha.init();
-    DuasAzkar.init();
-    
-    console.log('[App] Initialized successfully!');
-  } catch (error) {
-    console.error('[App] Error:', error);
-  }
+};
+document.body.appendChild(installBtn);
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = 'block';
 });
 
-// ============================================
-// نظام التبويبات المبسط
-// ============================================
-function initTabs() {
-  console.log('[App] Initializing tabs...');
-  
-  const tabBtns = document.querySelectorAll('.tab-btn');
-  const tabContents = document.querySelectorAll('.tab-content');
-  
-  tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      console.log('[App] Tab clicked:', btn.dataset.tab);
-      
-      const tabId = btn.dataset.tab;
-      
-      // إخفاء جميع التبويبات
-      tabContents.forEach(content => {
-        content.hidden = true;
-        content.classList.remove('active');
-      });
-      
-      // إزالة النشاط من جميع الأزرار
-      tabBtns.forEach(b => {
-        b.classList.remove('active');
-      });
-      
-      // إظهار التبويب المطلوب
-      const activeTab = document.getElementById(tabId);
-      if (activeTab) {
-        activeTab.hidden = false;
-        activeTab.classList.add('active');
-        btn.classList.add('active');
-        console.log('[App] Tab activated:', tabId);
-      }
+// Service Worker registration
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').then(reg => {
+        console.log('Service Worker registered');
+        reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    if (confirm('تحديث جديد متاح! هل تريد التحديث الآن؟')) {
+                        window.location.reload();
+                    }
+                }
+            });
+        });
     });
-  });
-  
-  console.log('[App] Tabs initialized');
 }
+
+// Initialization
+document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    appState = getInitialState();
+    initMasbaha(appState);
+    initDuasAzkar(appState);
+    updateVisitorCounter();
+});
