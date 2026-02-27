@@ -1,1086 +1,328 @@
-/* ============================================
-   صدقة جارية - المرحوم صبري كامل سليم
-   Main Stylesheet - الإصدار 2.1.0
-   الجزء 1 من 3
-   ============================================ */
-
-/* ============================================
-   1. متغيرات CSS (CSS Variables)
-   ============================================ */
-:root {
-  /* الألوان - الوضع الفاتح */
-  --primary: #1E6F5C;
-  --primary-dark: #155245;
-  --primary-light: #2E8B75;
-  --accent: #2ECC71;
-  --accent-hover: #27AE60;
-  
-  --bg-primary: #F8F9FA;
-  --bg-secondary: #FFFFFF;
-  --bg-card: #FFFFFF;
-  
-  --text-main: #1A1A2E;
-  --text-sub: #6B7280;
-  --text-light: #9CA3AF;
-  
-  --border: #E5E7EB;
-  --border-focus: #1E6F5C;
-  
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
-  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.05);
-  
-  --success: #10B981;
-  --warning: #F59E0B;
-  --error: #EF4444;
-  --info: #3B82F6;
-  
-  /* الخطوط */
-  --font-main: 'Tajawal', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-quran: 'Amiri', 'Traditional Arabic', serif;
-  
-  /* الأحجام */
-  --font-size-base: 16px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --radius-full: 9999px;
-  
-  /* المسافات */  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  
-  /* التحولات */
-  --transition-fast: 0.15s ease;
-  --transition-normal: 0.3s ease;
-  --transition-slow: 0.5s ease;
+:root{
+  --bg:#f7f7f7;
+  --card:#ffffff;
+  --text:#111;
+  --muted:#555;
+  --primary:#1b5e20;
+  --primary-contrast:#fff;
+  --border:#e5e5e5;
+  --shadow:0 6px 18px rgba(0,0,0,.08);
+  --radius:16px;
+  --focus:0 0 0 3px rgba(27,94,32,.25);
+  --font: 16px;
 }
 
-/* ============================================
-   2. الوضع الليلي (Dark Mode)
-   ============================================ */
-[data-theme="dark"] {
-  --primary: #2ECC71;
-  --primary-dark: #27AE60;
-  --primary-light: #58D68D;
-  
-  --bg-primary: #0F172A;
-  --bg-secondary: #1E293B;
-  --bg-card: #1E293B;
-  
-  --text-main: #F1F5F9;
-  --text-sub: #94A3B8;
-  --text-light: #64748B;
-  
-  --border: #334155;
-  --border-focus: #2ECC71;
-  
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
-  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-/* ============================================
-   3. أحجام الخطوط (Font Sizes)
-   ============================================ */
-.font-small {
-  --font-size-base: 14px;
-}
-
-.font-medium {
-  --font-size-base: 16px;
-}
-
-.font-large {
-  --font-size-base: 20px;
-}
-/* ============================================
-   4. خلفية النقوش الإسلامية (Pattern)
-   ============================================ */
-.body-pattern {
-  background-image: 
-    radial-gradient(var(--border) 1px, transparent 1px),
-    radial-gradient(var(--border) 1px, transparent 1px);
-  background-size: 20px 20px;
-  background-position: 0 0, 10px 10px;
-}
-
-/* ============================================
-   5. إعادة تعيين أساسية (Reset)
-   ============================================ */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  scroll-behavior: smooth;
-  font-size: var(--font-size-base);
-  -webkit-text-size-adjust: 100%;
-}
-
-body {
-  font-family: var(--font-main);
-  background: var(--bg-primary);
-  color: var(--text-main);
-  line-height: 1.6;
-  min-height: 100vh;
-  transition: background var(--transition-normal), color var(--transition-normal);
-  overflow-x: hidden;
-  touch-action: manipulation;
-}
-
-/* ============================================
-   6. إمكانية الوصول (Accessibility)
-   ============================================ */
-.skip-link {
-  position: absolute;
-  top: -50px;
-  left: 0;
-  background: var(--primary);
-  color: white;
-  padding: var(--spacing-sm) var(--spacing-md);
-  z-index: 9999;
-  transition: top var(--transition-fast);  text-decoration: none;
-  font-weight: 600;
-}
-
-.skip-link:focus {
-  top: 0;
-  outline: 3px solid var(--accent);
-  outline-offset: 2px;
-}
-
-:focus-visible {
-  outline: 3px solid var(--primary);
-  outline-offset: 2px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0f1211;
+    --card:#151a18;
+    --text:#f3f5f4;
+    --muted:#b7c0bb;
+    --border:#26302c;
+    --shadow:0 10px 24px rgba(0,0,0,.35);
   }
 }
 
-/* ============================================
-   7. النوافذ المنبثقة (Modals)
-   ============================================ */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  padding: var(--spacing-md);
+html{ font-size: var(--font); }
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial;
+}
+
+.hidden{ display:none !important; }
+.muted{ color:var(--muted); }
+
+.skip-link{
+  position:absolute;
+  top:-999px;
+  right:auto;
+  background:var(--primary);
+  color:var(--primary-contrast);
+  padding:.6rem .9rem;
+  border-radius:12px;
+  z-index:9999;
+}
+.skip-link:focus{ top:12px; right:12px; }
+
+.app-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px 16px 8px;
+  gap:12px;
+}
+.app-title{ margin:0; font-size:1.2rem; }
+.app-subtitle{ margin:.25rem 0 0; color:var(--muted); font-size:.95rem; }
+
+.icon-btn{
+  border:1px solid var(--border);
+  background:var(--card);
+  border-radius:12px;
+  padding:.5rem .6rem;
+  cursor:pointer;
+}
+.icon-btn:focus-visible{ outline:none; box-shadow:var(--focus); }
+
+.app-main{ padding:12px 16px 24px; }
+
+.tabs{
+  display:flex;
+  gap:8px;
+  overflow:auto;
+  padding:8px 0 12px;
+}
+.tab{
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--text);
+  border-radius:999px;
+  padding:.55rem .9rem;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.tab.active{
+  background:var(--primary);
+  color:var(--primary-contrast);
+  border-color:transparent;
+}
+.tab:focus-visible{ outline:none; box-shadow:var(--focus); }
+
+.panel{ display:none; }
+.panel.active{ display:block; }
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:14px;
+}
+.card-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:12px;
+}
+.card h2{ margin:0; font-size:1.1rem; }
+
+.btn{
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--text);
+  border-radius:14px;
+  padding:.6rem .9rem;
+  cursor:pointer;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+.btn:focus-visible{ outline:none; box-shadow:var(--focus); }
+.btn-primary{
+  background:var(--primary);
+  border-color:transparent;
+  color:var(--primary-contrast);
 }
-
-.modal.hidden {
-  display: none;
-}
-
-.modal-content {
-  background: var(--bg-card);
-  padding: var(--spacing-xl);
-  border-radius: var(--radius-lg);  width: 100%;
-  max-width: 400px;
-  box-shadow: var(--shadow-lg);
-  text-align: center;
-  animation: slideUp var(--transition-normal);
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-.modal-content.small {
-  max-width: 300px;
-}
-
-.modal-content h2,
-.modal-content h3,
-.modal-content h4 {
-  color: var(--primary);
-  margin-bottom: var(--spacing-md);
-}
-
-.modal-content p {
-  color: var(--text-sub);
-  margin-bottom: var(--spacing-md);
-}
-
-.modal-content ul {
-  text-align: right;
-  margin: var(--spacing-md) 0;
-  padding-right: var(--spacing-lg);
-}
-
-.modal-content li {
-  margin: var(--spacing-xs) 0;
-  color: var(--text-main);
-}
-
-.modal-content .note {
-  font-size: 0.85rem;
-  color: var(--warning);
-  margin-top: var(--spacing-md);
-  padding: var(--spacing-sm);
-  background: rgba(245, 158, 11, 0.1);
-  border-radius: var(--radius-sm);
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(30px);
-    opacity: 0;
-  }  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* ============================================
-   8. تنبيه التحديث (Update Notification)
-   ============================================ */
-.notification {
-  position: fixed;
-  bottom: 100px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--primary);
-  color: white;
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-radius: var(--radius-full);
-  box-shadow: var(--shadow-lg);
-  z-index: 1500;
-  display: flex;
-  gap: var(--spacing-md);
-  align-items: center;
-  animation: slideUp var(--transition-normal);
-}
-
-.notification.hidden {
-  display: none;
-}
-
-.notification button {
-  background: white;
-  color: var(--primary);
-  border: none;
-  padding: var(--spacing-xs) var(--spacing-md);
-  border-radius: var(--radius-full);
-  cursor: pointer;
-  font-weight: 700;
-  font-family: var(--font-main);
-  transition: transform var(--transition-fast);
-}
-
-.notification button:hover {
-  transform: scale(1.05);
-}
-
-/* ============================================
-   9. الهيدر (Header)
-   ============================================ */
-.app-header {  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  color: white;
-  padding: var(--spacing-lg) var(--spacing-md);
-  text-align: center;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: var(--shadow);
-}
-
-.header-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-sm);
-}
-
-.app-header h1 {
-  font-size: 1.5rem;
-  font-weight: 800;
-  margin: 0;
-}
-
-.subtitle {
-  font-size: 0.95rem;
-  opacity: 0.95;
-  margin-bottom: var(--spacing-xs);
-}
-
-.deceased-prayer {
-  font-size: 0.85rem;
-  opacity: 0.9;
-  font-style: italic;
-  margin-bottom: var(--spacing-md);
-}
-
-.header-controls {
-  display: flex;
-  justify-content: center;
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-sm);
-}
-
-.icon-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  border-radius: var(--radius-full);
-  width: 44px;
-  height: 44px;
-  color: white;  font-size: 1.2rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform var(--transition-fast), background var(--transition-fast);
-}
-
-.icon-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.05);
-}
-
-.icon-btn:active {
-  transform: scale(0.95);
-}
-
-.icon-btn svg {
-  width: 20px;
-  height: 20px;
-}/* ============================================
-   صدقة جارية - المرحوم صبري كامل سليم
-   Main Stylesheet - الإصدار 2.1.0
-   الجزء 2 من 3
-   ============================================ */
-
-/* ============================================
-   10. التبويبات (Tabs)
-   ============================================ */
-.tabs-container {
-  display: flex;
-  background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 140px;
-  z-index: 99;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-}
-
-.tabs-container::-webkit-scrollbar {
-  display: none;
-}
-
-.tab-btn {
-  flex: 1;
-  min-width: max-content;
-  padding: var(--spacing-md);
-  background: none;
-  border: none;
-  border-bottom: 3px solid transparent;
-  color: var(--text-sub);
-  font-family: var(--font-main);
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  white-space: nowrap;
-}
-
-.tab-btn.active {
-  color: var(--primary);
-  border-bottom-color: var(--primary);
-  font-weight: 700;
-}
-
-.tab-btn:hover:not(.active) {
-  color: var(--text-main);
-  background: var(--bg-primary);}
-
-/* ============================================
-   11. المحتوى الرئيسي (Main Content)
-   ============================================ */
-.app-content {
-  padding: var(--spacing-lg) var(--spacing-md);
-  max-width: 600px;
-  margin: 0 auto;
-  min-height: calc(100vh - 320px);
-}
-
-.tab-content {
-  animation: fadeIn var(--transition-normal);
-}
-
-.tab-content[hidden] {
-  display: none;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ============================================
-   12. البطاقات (Cards)
-   ============================================ */
-.card {
-  background: var(--bg-card);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
-}
-
-/* ============================================
-   13. المسبحة (Masbaha)
-   ============================================ */
-.masbaha-container {
-  text-align: center;
-}
-
-.dhikr-header {  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-xl);
-}
-
-.dhikr-display {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--primary);
-  font-family: var(--font-quran);
-  min-height: 3rem;
-  display: flex;
-  align-items: center;
-}
-
-.info-btn {
-  background: none;
-  border: none;
-  font-size: 1.3rem;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: opacity var(--transition-fast);
-  padding: var(--spacing-xs);
-}
-
-.info-btn:hover {
-  opacity: 1;
-}
-
-.counter-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: var(--spacing-lg);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.counter-circle {
-  width: 240px;
-  height: 240px;
-  border-radius: 50%;
-  background: linear-gradient(145deg, var(--bg-card), var(--bg-primary));
-  border: 5px solid var(--primary);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  box-shadow: var(--shadow-lg), 0 0 0 8px rgba(30, 111, 92, 0.1);  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-  user-select: none;
-  -webkit-user-select: none;
-  position: relative;
-  overflow: hidden;
-}
-
-.counter-circle::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(46, 204, 113, 0.1) 0%, transparent 70%);
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-}
-
-.counter-container:active .counter-circle::before,
-.counter-container:focus .counter-circle::before {
-  opacity: 1;
-}
-
-.counter-container:active .counter-circle,
-.counter-container:focus .counter-circle {
-  transform: scale(0.97);
-  box-shadow: var(--shadow), 0 0 0 4px rgba(30, 111, 92, 0.2);
-}
-
-.counter-circle:hover {
-  box-shadow: var(--shadow-lg), 0 0 0 12px rgba(30, 111, 92, 0.15);
-}
-
-.count-num {
-  font-size: 4.5rem;
-  font-weight: 800;
-  color: var(--text-main);
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-
-.counter-label {
-  font-size: 1.1rem;
-  color: var(--text-sub);
-  margin-top: var(--spacing-xs);
-  font-weight: 500;
-}
-
-.batch-info {  font-size: 0.9rem;
-  color: var(--primary);
-  margin-top: var(--spacing-sm);
-  font-weight: 600;
-  background: rgba(30, 111, 92, 0.1);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--radius-full);
-}
-
-.counter-info {
-  margin: var(--spacing-lg) 0;
-  color: var(--text-sub);
-}
-
-.total-count {
-  font-size: 1rem;
-  color: var(--primary);
-  font-weight: 700;
-  margin-bottom: var(--spacing-sm);
-}
-
-.hint {
-  font-size: 0.85rem;
-  opacity: 0.8;
-}
-
-.masbha-actions {
-  display: flex;
-  gap: var(--spacing-sm);
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: var(--spacing-lg);
-}
-
-/* ============================================
-   14. الأزرار (Buttons)
-   ============================================ */
-.primary-btn,
-.secondary-btn,
-.nav-btn,
-.copy-btn {
-  padding: var(--spacing-md) var(--spacing-lg);
-  border: none;
-  border-radius: var(--radius-md);
-  font-family: var(--font-main);
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  display: inline-flex;  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-sm);
-  min-height: 44px;
-  min-width: 44px;
+.btn-ghost{
+  background:transparent;
 }
-
-.primary-btn {
-  background: var(--primary);
-  color: white;
-}
-
-.primary-btn:hover {
-  background: var(--primary-dark);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow);
-}
-
-.secondary-btn {
-  background: var(--bg-secondary);
-  color: var(--text-main);
-  border: 2px solid var(--border);
-}
-
-.secondary-btn:hover {
-  background: var(--bg-primary);
-  border-color: var(--primary);
-  color: var(--primary);
-}
-
-.nav-btn {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  color: var(--text-main);
-  padding: var(--spacing-sm) var(--spacing-md);
-}
-
-.nav-btn:hover {
-  background: var(--primary);
-  color: white;
-  border-color: var(--primary);
-}
-
-.copy-btn {
-  background: var(--primary);
-  color: white;
-  flex: 1;
-  max-width: 200px;
-}
-.copy-btn:hover {
-  background: var(--primary-dark);
-}
-
-.link-btn {
-  background: none;
-  border: none;
-  color: var(--text-sub);
-  text-decoration: underline;
-  cursor: pointer;
-  font-size: 0.85rem;
-  font-family: var(--font-main);
-  padding: var(--spacing-xs);
-}
-
-.link-btn:hover {
-  color: var(--primary);
-}
-
-/* ============================================
-   15. الأدعية (Duas)
-   ============================================ */
-.duas-container {
-  text-align: center;
-}
-
-.dua-type-toggle {
-  display: flex;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-lg);
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.dua-type-btn {
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--bg-secondary);
-  border: 2px solid var(--border);
-  border-radius: var(--radius-md);
-  color: var(--text-sub);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  font-family: var(--font-main);
-  font-weight: 500;
-}
-
-.dua-type-btn.active {
-  background: var(--primary);
-  color: white;
-  border-color: var(--primary);}
-
-.dua-container {
-  background: var(--bg-primary);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  margin: var(--spacing-lg) 0;
-  border: 1px solid var(--border);
-  min-height: 150px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.dua-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-md);
-  margin: var(--spacing-lg) 0;
-  flex-wrap: wrap;
-}
-
-.copy-hint {
-  color: var(--success);
-  font-size: 0.9rem;
-  margin-top: var(--spacing-sm);
-  font-weight: 600;
-  animation: fadeInOut 2s;
-}
-
-@keyframes fadeInOut {
-  0%, 100% { opacity: 0; }
-  20%, 80% { opacity: 1; }
-}
-
-/* ============================================
-   16. الأذكار (Azkar)
-   ============================================ */
-.azkar-container {
-  text-align: center;
-}
-
-.azkar-toggle {
-  display: flex;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-lg);
-  justify-content: center;
-  flex-wrap: wrap;
-}
-.azkar-opt {
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--bg-secondary);
-  border: 2px solid var(--border);
-  border-radius: var(--radius-md);
-  color: var(--text-sub);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  font-family: var(--font-main);
-  font-weight: 500;
-}
-
-.azkar-opt.active {
-  background: var(--primary);
-  color: white;
-  border-color: var(--primary);
-}
-
-.azkar-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
-.zikr-card {
-  background: var(--bg-primary);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-md);
-  border-right: 4px solid var(--primary);
-  text-align: right;
-  transition: transform var(--transition-fast);
-}
-
-.zikr-card:hover {
-  transform: translateX(-5px);
-}
-
-.zikr-text {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  color: var(--text-main);
-  margin-bottom: var(--spacing-sm);
-  font-family: var(--font-quran);
-}
-
-.zikr-count {
-  display: inline-block;
-  background: var(--primary);
-  color: white;  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--radius-sm);
-  font-size: 0.85rem;
-  font-weight: 700;
-}/* ============================================
-   صدقة جارية - المرحوم صبري كامل سليم
-   Main Stylesheet - الإصدار 2.1.0
-   الجزء 3 من 3
-   ============================================ */
-
-/* ============================================
-   17. القرآن (Quran)
-   ============================================ */
-.quran-container {
-  text-align: center;
-}
-
-.quran-btn-lg {
-  display: block;
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  color: white;
-  padding: var(--spacing-lg);
-  border-radius: var(--radius-lg);
-  text-decoration: none;
-  font-size: 1.2rem;
-  font-weight: 700;
-  margin-bottom: var(--spacing-xl);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+.btn-lg{
+  padding:.9rem 1.2rem;
+  font-size:1.05rem;
 }
 
-.quran-btn-lg:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
-}
-
-.quran-btn-lg span {
-  margin-left: var(--spacing-sm);
-}
-
-.surah-link {
-  display: block;
-  background: var(--bg-secondary);
-  border: 2px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-md);
-  margin-bottom: var(--spacing-sm);
-  text-decoration: none;
-  color: var(--text-main);
-  font-weight: 600;
-  transition: all var(--transition-fast);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.surah-link:hover {
-  border-color: var(--primary);
-  background: var(--bg-primary);
-  color: var(--primary);
-}
-
-.quran-note {
-  margin-top: var(--spacing-lg);
-  font-size: 0.85rem;
-  color: var(--text-sub);
-}
-
-/* ============================================
-   18. الفوتر (Footer)
-   ============================================ */
-.app-footer {
-  text-align: center;
-  padding: var(--spacing-xl) var(--spacing-md);
-  background: var(--bg-secondary);
-  border-top: 1px solid var(--border);
-  margin-top: var(--spacing-xl);
-}
-
-.app-footer p {
-  margin: var(--spacing-xs) 0;
-  color: var(--text-sub);
-}
-
-.visitor-counter {
-  font-weight: 600;
-  color: var(--primary);
-  margin: var(--spacing-sm) 0;
-}
-
-.version-info {
-  font-size: 0.8rem;
-  opacity: 0.7;
-}
-
-.developer {
-  font-size: 0.85rem;
-  margin-top: var(--spacing-md);
-  opacity: 0.8;
-}
-
-/* ============================================
-   19. Confetti Canvas
-   ============================================ */
-.confetti-canvas {  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1000;
-}
-
-/* ============================================
-   20. Feature List (Onboarding)
-   ============================================ */
-.feature-list {
-  text-align: right;
-  margin: var(--spacing-lg) 0;
-  padding-right: var(--spacing-lg);
-}
-
-.feature-list li {
-  margin: var(--spacing-sm) 0;
-  font-size: 1rem;
-  color: var(--text-main);
-}
-
-/* ============================================
-   21. Settings Form
-   ============================================ */
-.setting-group {
-  margin: var(--spacing-md) 0;
-  text-align: right;
-}
+.field{ display:grid; gap:6px; margin:10px 0; }
+.field.inline{ display:flex; align-items:center; gap:10px; }
+.field-label{ font-size:.95rem; color:var(--muted); }
 
-.setting-group label {
-  display: block;
-  margin-bottom: var(--spacing-xs);
-  font-weight: 600;
-  color: var(--text-main);
+.input,.select{
+  width:100%;
+  border:1px solid var(--border);
+  background:transparent;
+  color:var(--text);
+  border-radius:14px;
+  padding:.7rem .85rem;
 }
+.input:focus-visible,.select:focus-visible{ outline:none; box-shadow:var(--focus); }
 
-.setting-group select,
-.setting-group input {
-  width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--radius-md);
-  border: 2px solid var(--border);
-  background: var(--bg-secondary);
-  color: var(--text-main);
-  font-family: var(--font-main);
-  font-size: 1rem;
-  transition: border-color var(--transition-fast);}
-
-.setting-group select:focus,
-.setting-group input:focus {
-  outline: none;
-  border-color: var(--primary);
-}
-
-/* ============================================
-   22. وضع الخشوع (Khushu Mode)
-   ============================================ */
-body.khushu-mode .app-header,
-body.khushu-mode .tabs-container,
-body.khushu-mode .app-footer,
-body.khushu-mode .header-controls,
-body.khushu-mode .masbha-actions,
-body.khushu-mode #settings-btn {
-  display: none !important;
-}
-
-body.khushu-mode .app-content {
-  padding-top: var(--spacing-lg);
-}
-
-body.khushu-mode .counter-circle {
-  width: 300px;
-  height: 300px;
-  border-width: 6px;
-}
-
-body.khushu-mode .count-num {
-  font-size: 5.5rem;
-}
-
-/* ============================================
-   23. استجابة الشاشات (Responsive)
-   ============================================ */
-@media (min-width: 768px) {
-  .app-header h1 {
-    font-size: 1.8rem;
-  }
-  
-  .counter-circle {
-    width: 280px;
-    height: 280px;
-  }
-  
-  .count-num {
-    font-size: 5rem;
-  }  
-  .modal-content {
-    max-width: 500px;
-  }
-}
-
-@media (max-width: 480px) {
-  .tabs-container {
-    font-size: 0.85rem;
-  }
-  
-  .counter-circle {
-    width: 200px;
-    height: 200px;
-  }
-  
-  .count-num {
-    font-size: 3.5rem;
-  }
-  
-  .app-header {
-    padding: var(--spacing-md);
-  }
-  
-  .modal-content {
-    padding: var(--spacing-lg);
-  }
+.toggle{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin:10px 0;
+}
+
+.chip{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  border:1px solid var(--border);
+  background:transparent;
+  border-radius:999px;
+  padding:.45rem .75rem;
+}
+
+.list-toolbar{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+  margin:10px 0 12px;
+}
+
+.items-list{
+  display:grid;
+  gap:10px;
+}
+
+.item{
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:12px;
+  background:transparent;
+}
+.item-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.item-title{
+  margin:0 0 8px;
+  font-size:1rem;
+}
+.item-text{
+  margin:0;
+  line-height:1.9;
+}
+
+.masbaha-controls{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:10px;
+}
+@media (max-width: 640px){
+  .masbaha-controls{ grid-template-columns: 1fr; }
+}
+
+.masbaha-display{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:10px;
+  margin:12px 0;
+}
+@media (max-width: 640px){
+  .masbaha-display{ grid-template-columns: 1fr; }
+}
+
+.counter-box{
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:12px;
+  text-align:center;
+}
+.counter-label{ color:var(--muted); font-size:.9rem; }
+.counter-value{ font-size:1.6rem; font-weight:700; margin-top:6px; }
+
+.masbaha-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+
+.details{ margin-top:12px; }
+.sessions-list{ display:grid; gap:8px; margin-top:10px; }
+.session-row{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:10px;
+}
+.sessions-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+
+.update-banner{
+  margin:0 16px 8px;
+  border:1px solid var(--border);
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:10px 12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+.update-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+
+/* Toast */
+.toast-root{
+  position:fixed;
+  left:14px;
+  bottom:14px;
+  display:grid;
+  gap:10px;
+  z-index:9999;
+  max-width:min(420px, calc(100vw - 28px));
+}
+.toast{
+  border:1px solid var(--border);
+  background:var(--card);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  padding:10px 12px;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:flex-start;
+  animation: toast-in .18s ease-out;
+}
+.toast p{ margin:0; line-height:1.5; }
+.toast .toast-close{
+  border:1px solid var(--border);
+  background:transparent;
+  border-radius:12px;
+  padding:.25rem .45rem;
+  cursor:pointer;
+}
+@keyframes toast-in{
+  from{ transform: translateY(6px); opacity:0; }
+  to{ transform: translateY(0); opacity:1; }
+}
+
+/* Modal */
+.modal{ position:fixed; inset:0; z-index:9998; }
+.modal-backdrop{
+  position:absolute; inset:0;
+  background:rgba(0,0,0,.45);
+}
+.modal-content{
+  position:relative;
+  margin: 8vh auto;
+  width:min(640px, calc(100vw - 24px));
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:12px;
+}
+.modal-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.modal-body{ padding-top:10px; }
+
+/* Khushu mode */
+body.khushu .tabs,
+body.khushu .header-right,
+body.khushu .app-subtitle{
+  display:none;
 }
-
-/* ============================================
-   24. طباعة (Print)
-   ============================================ */
-@media print {
-  .app-header,
-  .tabs-container,
-  .app-footer,
-  .icon-btn,
-  .modal,
-  .notification {
-    display: none !important;
-  }
-  
-  body {
-    background: white;
-    color: black;
-  }
-  
-  .card {
-    box-shadow: none;
-    border: 1px solid #ccc;  }
-}
-
-/* ============================================
-   25. Utilities
-   ============================================ */
-.fade-in-up {
-  animation: fadeIn var(--transition-normal) both;
-}
-
-.hidden {
-  display: none !important;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.text-right {
-  text-align: right;
-}
-
-.mt-1 { margin-top: var(--spacing-sm); }
-.mt-2 { margin-top: var(--spacing-md); }
-.mt-3 { margin-top: var(--spacing-lg); }
-
-.mb-1 { margin-bottom: var(--spacing-sm); }
-.mb-2 { margin-bottom: var(--spacing-md); }
-.mb-3 { margin-bottom: var(--spacing-lg); }
-
-/* ============================================
-   نهاية ملف CSS
-   ============================================ */
