@@ -1,4 +1,7 @@
-let currentDeceasedName = "المرحوم صبري كامل سليم";
+let defaultDeceasedName = "المرحوم صبري كامل سليم";
+// هنا التحديث: التطبيق سيبحث في الذاكرة أولاً، لو لم يجد اسماً سيستخدم الاسم الافتراضي
+let currentDeceasedName = localStorage.getItem('savedDeceasedName') || defaultDeceasedName;
+
 let currentLang = localStorage.getItem('appLang') || 'ar';
 const SIX_HOURS_MS = 6 * 60 * 60 * 1000;
 
@@ -28,9 +31,18 @@ function applyLanguage() {
 
 /* INIT */
 document.addEventListener('DOMContentLoaded', () => {
+    // هنا التحديث: التقاط الاسم من الرابط وحفظه في الذاكرة للأبد
     const urlParams = new URLSearchParams(window.location.search);
     const customName = urlParams.get('name');
-    if (customName && customName.trim() !== "") { currentDeceasedName = customName.trim(); document.querySelectorAll('.deceased-name').forEach(el => el.textContent = currentDeceasedName); document.title = currentDeceasedName + " | Sadaqa"; }
+    if (customName && customName.trim() !== "") { 
+        currentDeceasedName = customName.trim(); 
+        localStorage.setItem('savedDeceasedName', currentDeceasedName); // حفظ الاسم في الهاتف
+    }
+    
+    // تطبيق الاسم على الشاشة والعنوان
+    document.querySelectorAll('.deceased-name').forEach(el => el.textContent = currentDeceasedName); 
+    document.title = currentDeceasedName + " | Sadaqa";
+
     initTheme(); loadData(); checkAzkarAutoReset(); 
     if(typeof DECEASED_DUAS !== 'undefined' && typeof GENERAL_DUAS !== 'undefined'){
         state.deceasedIdx = state.deceasedIdx || Math.floor(Math.random() * DECEASED_DUAS[currentLang].length);
