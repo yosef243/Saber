@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5661854146208967" crossorigin="anonymous"></script>
+
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-48LGD8FVRY"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -8,6 +10,7 @@
       gtag('js', new Date());
       gtag('config', 'G-48LGD8FVRY');
     </script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#1E6F5C">
@@ -230,7 +233,17 @@
     <div class="ad-container">
         <div class="ad-box">
             <span style="font-size: 0.75rem; margin-bottom: 5px; opacity: 0.7;" data-i18n="ad_label">إعلان</span>
-            <div id="ad-placeholder">مساحة مخصصة للإعلانات الموثوقة</div>
+            
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-5661854146208967"
+                 data-ad-slot="auto"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+            
         </div>
     </div>
 
@@ -243,7 +256,7 @@
         const SIX_HOURS_MS = 6 * 60 * 60 * 1000;
 
         let state = { count: 0, deceasedIdx: 0, generalIdx: 0, currentZekrIdx: 0, batchCount: 1, azkarProgress: {}, lastAzkarReset: Date.now() };
-        const STORAGE_KEY = 'sabry_v21_final';
+        const STORAGE_KEY = 'sabry_v22_final';
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
         /* PWA Install */
@@ -260,7 +273,7 @@
             document.documentElement.lang = currentLang;
             document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
             document.getElementById('langToggleBtn').innerText = currentLang === 'ar' ? 'EN' : 'عربي';
-            document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if (UI_TEXT && UI_TEXT[currentLang] && UI_TEXT[currentLang][key]) { el.innerText = UI_TEXT[currentLang][key]; } });
+            document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if (typeof UI_TEXT !== 'undefined' && UI_TEXT[currentLang] && UI_TEXT[currentLang][key]) { el.innerText = UI_TEXT[currentLang][key]; } });
             updateUI();
             const activeAzkarBtn = document.querySelector('#azkar .azkar-opt.active');
             if(activeAzkarBtn) { const typeMatch = activeAzkarBtn.getAttribute('onclick').match(/'([^']+)'/); if (typeMatch) renderAzkar(typeMatch[1]); }
@@ -291,7 +304,7 @@
             checkAzkarAutoReset(); 
             const list = document.getElementById('azkarList');
             if(typeof AZKAR === 'undefined') return;
-            const timesTxt = UI_TEXT[currentLang].times;
+            const timesTxt = typeof UI_TEXT !== 'undefined' ? UI_TEXT[currentLang].times : (currentLang === 'ar' ? 'مرات' : 'times');
             let html = '';
             AZKAR[currentLang][type].forEach((zekr, index) => {
                 const key = `${type}_${index}`; const currentCount = state.azkarProgress[key] || 0; const target = zekr.c; const isCompleted = currentCount >= target;
@@ -315,7 +328,7 @@
         function toggleDuaCategory(type, btn) { const container = btn.parentElement; container.querySelectorAll('.azkar-opt').forEach(b => b.classList.remove('active')); btn.classList.add('active'); activeDuaType = type; renderActiveDua(); }
         function renderActiveDua() { if(typeof DECEASED_DUAS === 'undefined') return; const isDeceased = activeDuaType === 'deceased'; const arr = isDeceased ? DECEASED_DUAS[currentLang] : GENERAL_DUAS[currentLang]; const idx = isDeceased ? state.deceasedIdx : state.generalIdx; document.getElementById('activeDuaText').textContent = arr[idx]; document.getElementById('activeDuaCounter').textContent = idx + 1; document.getElementById('activeDuaTotal').textContent = arr.length; }
         function navigateDua(dir) { const maxDeceased = DECEASED_DUAS[currentLang].length; const maxGeneral = GENERAL_DUAS[currentLang].length; if (activeDuaType === 'deceased') { state.deceasedIdx += dir; if (state.deceasedIdx >= maxDeceased) state.deceasedIdx = 0; if (state.deceasedIdx < 0) state.deceasedIdx = maxDeceased - 1; } else { state.generalIdx += dir; if (state.generalIdx >= maxGeneral) state.generalIdx = 0; if (state.generalIdx < 0) state.generalIdx = maxGeneral - 1; } renderActiveDua(); saveData(); }
-        function copyActiveDua() { const isDeceased = activeDuaType === 'deceased'; const text = isDeceased ? DECEASED_DUAS[currentLang][state.deceasedIdx] : GENERAL_DUAS[currentLang][state.generalIdx]; const footerText = UI_TEXT[currentLang].footer_copy_text.replace('{name}', currentDeceasedName); const footer = isDeceased ? footerText : ""; navigator.clipboard.writeText(text + footer).then(() => alert(currentLang === 'ar' ? 'تم النسخ' : 'Copied!')); }
+        function copyActiveDua() { const isDeceased = activeDuaType === 'deceased'; const text = isDeceased ? DECEASED_DUAS[currentLang][state.deceasedIdx] : GENERAL_DUAS[currentLang][state.generalIdx]; const footerText = typeof UI_TEXT !== 'undefined' ? UI_TEXT[currentLang].footer_copy_text.replace('{name}', currentDeceasedName) : `\n\n(عن روح ${currentDeceasedName})`; const footer = isDeceased ? footerText : ""; navigator.clipboard.writeText(text + footer).then(() => alert(currentLang === 'ar' ? 'تم النسخ' : 'Copied!')); }
         function updateUI() { updateCounterUI(); renderActiveDua(); }
         
         function initTheme() { const savedTheme = localStorage.getItem('theme') || 'default'; setTheme(savedTheme, null); }
@@ -327,7 +340,7 @@
         function closeModal() { document.getElementById('sadaqaModal').style.display = 'none'; }
         function generateSadaqaLink() { const name = document.getElementById('deceasedNameInput').value.trim(); if (!name) return; if (typeof gtag === 'function') { gtag('event', 'create_sadaqa_link', { 'created_for': name }); } const baseUrl = window.location.href.split('?')[0]; const newUrl = baseUrl + "?name=" + encodeURIComponent(name); document.getElementById('generatedLinkUrl').value = newUrl; document.getElementById('step1').style.display = 'none'; document.getElementById('step2').style.display = 'block'; }
         function copyLinkAction() { const linkInput = document.getElementById('generatedLinkUrl'); linkInput.select(); linkInput.setSelectionRange(0, 99999); navigator.clipboard.writeText(linkInput.value).then(() => alert(currentLang === 'ar' ? 'تم النسخ!' : 'Copied!')); }
-         function openLinkAction() { window.open(document.getElementById('generatedLinkUrl').value, '_blank'); }
+        function openLinkAction() { window.open(document.getElementById('generatedLinkUrl').value, '_blank'); }
     </script>
 </body>
 </html>
