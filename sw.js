@@ -1,61 +1,69 @@
-const CACHE_NAME = 'sadaqa-app-v7';
+// اسم الكاش والإصدار (تم التحديث لـ v4 لضمان تحميل الهيكلة الجديدة)
+const CACHE_NAME = 'sabry-sadaqa-v0.0.3';
 
-// قائمة الملفات التي سيتم حفظها لتعمل بدون إنترنت (تم إضافة data.js هنا)
-const ASSETS_TO_CACHE = [
-    './',
-    './index.html',
-    './data.js',
-    './manifest.json',
-    './icon-72x72.png',
-    './icon-96x96.png',
-    './icon-128x128.png',
-    './icon-144x144.png',
-    './icon-152x152.png',
-    './icon-192x192.png',
-    './icon-384x384.png',
-    './icon-512x512.png',
-    'https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@400;700&display=swap',
-    'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js'
+// قائمة بكل الملفات التي يجب حفظها لتعمل بدون إنترنت (تحديث شامل للمسارات)
+const urlsToCache = [
+  './',
+  './index.html',
+  './manifest.json',
+  
+  // ملفات التصميم
+  './css/themes.css',
+  './css/main.css',
+  
+  // ملفات البرمجة (العقل المدبر المقسم)
+  './js/core.js',
+  './js/ui.js',
+  './js/pwa.js',
+  
+  // ملفات البيانات (قاعدة البيانات المقسمة)
+  './data/azkar.js',
+  './data/duas.js',
+  './data/tasks.js',
+  './data/stories.js',
+  './data/names.js',
+  
+  // الأيقونات الأساسية داخل مجلد icons
+  './icons/icon-192x192.png',
+  './icons/icon-512x512.png'
 ];
 
-self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            console.log('تم الكاش بنجاح للتحديث الجديد');
-            return cache.addAll(ASSETS_TO_CACHE);
-        }).catch((err) => console.log('خطأ في الكاش:', err))
-    );
-    self.skipWaiting();
+// 1. حدث التثبيت (Install) - يقوم بتحميل الملفات الجديدة في الذاكرة
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        console.log('Opened cache v4');
+        return cache.addAll(urlsToCache);
+      })
+      .then(() => self.skipWaiting())
+  );
 });
 
-self.addEventListener('activate', (event) => {
-    event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cacheName) => {
-                    // مسح أي كاش قديم لا يطابق الإصدار الحالي لإجبار التحديث
-                    if (cacheName !== CACHE_NAME) {
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        })
-    );
-    self.clients.claim();
+// 2. حدث الجلب (Fetch) - لقراءة الملفات من الذاكرة عند انقطاع الإنترنت
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        // إذا وجد الملف في الكاش، يرجعه. وإلا يحمله من الإنترنت
+        return response || fetch(event.request);
+      })
+  );
 });
 
-self.addEventListener('fetch', (event) => {
-    // نتجاهل طلبات الروابط المخصصة (التي تحتوي على اسم المتوفى) لكي يتم فتحها بشكل صحيح من السيرفر
-    if (event.request.url.includes('?name=')) {
-        event.respondWith(fetch(event.request));
-        return;
-    }
-
-    event.respondWith(
-        caches.match(event.request).then((response) => {
-            return response || fetch(event.request).catch(() => {
-                console.log('التطبيق يعمل في وضع عدم الاتصال (Offline)');
-            });
+// 3. حدث التفعيل (Activate) - لمسح أي إصدار قديم من الكاش فوراً
+self.addEventListener('activate', event => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            console.log('Deleting old cache:', cacheName);
+            return caches.delete(cacheName);
+          }
         })
-    );
+      );
+    }).then(() => self.clients.claim())
+  );
 });
