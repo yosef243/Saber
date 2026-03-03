@@ -76,17 +76,33 @@ function initPWA() {
     }
 }
 
-// 4. مشاركة الصفحة وإنشاء صدقة جارية
+// 4. مشاركة الصفحة الحالية (ترقية زر المشاركة ليصبح ذكياً)
 function shareCurrentPage() { 
-    if (navigator.share) navigator.share({ title: currentDeceasedName, url: window.location.href }); 
-    else window.open(`https://wa.me/?text=${encodeURIComponent(window.location.href)}`); 
+    // الحصول على الاسم المنظف بدون ألقاب
+    let cleanName = document.title.split('|')[0].replace(/المرحومة/g, '').replace(/المرحوم/g, '').trim();
+    let prefix = (typeof currentGender !== 'undefined' && currentGender === 'f') ? 'المرحومة' : 'المرحوم';
+    
+    const shareTitle = `${prefix} ${cleanName}`;
+    const textAr = `نسألكم الدعاء بالمغفرة والرحمة لـ (${shareTitle}).\nافتح الرابط لقراءة الأذكار بنية الصدقة الجارية:\n${window.location.href}`;
+    const textEn = `Please pray for (${cleanName}).\nOpen the link to read Azkar as Sadaqa Jariyah:\n${window.location.href}`;
+    const shareText = currentLang === 'ar' ? textAr : textEn;
+
+    if (navigator.share) {
+        navigator.share({ title: shareTitle, text: shareText }); 
+    } else { 
+        window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`); 
+    } 
 }
 
+// 5. النوافذ المنبثقة وتوليد الروابط
 function openModal() { 
     document.getElementById('sadaqaModal').style.display = 'flex'; 
     document.getElementById('step1').style.display = 'block'; 
     document.getElementById('step2').style.display = 'none'; 
     document.getElementById('deceasedNameInput').value = ''; 
+    // إعادة تعيين الراديو للذكر افتراضياً عند فتح النافذة
+    const maleRadio = document.querySelector('input[name="gender"][value="m"]');
+    if(maleRadio) maleRadio.checked = true;
 }
 
 function closeModal() { 
@@ -94,28 +110,46 @@ function closeModal() {
 }
 
 function generateSadaqaLink() { 
-    const name = document.getElementById('deceasedNameInput').value.trim(); 
-    if (!name) return; 
+    let name = document.getElementById('deceasedNameInput').value.trim(); 
+    if (!name) {
+        alert(currentLang === 'ar' ? "الرجاء كتابة اسم المتوفى أولاً" : "Please enter the deceased's name");
+        return; 
+    }
+    
+    // تنظيف الاسم من الألقاب إذا كتبها المستخدم
+    name = name.replace(/المرحومة/g, '').replace(/المرحوم/g, '').trim();
+
+    // سحب نوع الجنس المختار
+    const genderNode = document.querySelector('input[name="gender"]:checked');
+    const gender = genderNode ? genderNode.value : 'm';
     
     if (typeof gtag === 'function') { 
-        gtag('event', 'create_sadaqa_link', { 'created_for': name }); 
+        gtag('event', 'create_sadaqa_link', { 'created_for': name, 'gender': gender }); 
     } 
     
     const baseUrl = window.location.href.split('?')[0]; 
-    const newUrl = baseUrl + "?name=" + encodeURIComponent(name); 
+    const newUrl = `${baseUrl}?name=${encodeURIComponent(name)}&g=${gender}`; 
     
     document.getElementById('generatedLinkUrl').value = newUrl; 
     document.getElementById('step1').style.display = 'none'; 
     document.getElementById('step2').style.display = 'block'; 
 }
 
-// 5. النسخ الذكي للرسائل
+// 6. النسخ الذكي للرسائل والروابط الجديدة
 function copyLinkAction() { 
     const linkInput = document.getElementById('generatedLinkUrl').value; 
-    const nameInput = document.getElementById('deceasedNameInput').value.trim(); 
+    let nameInput = document.getElementById('deceasedNameInput').value.trim(); 
+    
+    // تنظيف الاسم
+    nameInput = nameInput.replace(/المرحومة/g, '').replace(/المرحوم/g, '').trim();
+
+    // تحديد اللقب للرسالة بناءً على اختيار المستخدم
+    const genderNode = document.querySelector('input[name="gender"]:checked');
+    const gender = genderNode ? genderNode.value : 'm';
+    const prefix = gender === 'f' ? 'المرحومة' : 'المرحوم';
     
     const message = currentLang === 'ar' 
-        ? `صدقة جارية عن روح (${nameInput})\nشاركونا الأجر في قراءة القرآن والأذكار والمسبحة عبر هذا الرابط:\n${linkInput}`
+        ? `صدقة جارية عن روح (${prefix} ${nameInput})\nشاركونا الأجر في قراءة القرآن والأذكار والمسبحة عبر هذا الرابط:\n${linkInput}`
         : `Sadaqa Jariyah for (${nameInput})\nJoin us in reading Azkar via this link:\n${linkInput}`;
         
     navigator.clipboard.writeText(message).then(() => {

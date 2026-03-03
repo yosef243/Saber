@@ -4,7 +4,8 @@
 
 const UI_TEXT = {
     ar: {
-        header_dua: "اللهم اغفر له وارحمه وعافه واعف عنه وأكرم نزله ووسع مدخله",
+        header_dua_m: "اللهم اغفر له وارحمه وعافه واعف عنه وأكرم نزله ووسع مدخله",
+        header_dua_f: "اللهم اغفر لها وارحمها وعافها واعف عنها وأكرم نزلها ووسع مدخلها",
         tab_tasbeeh: "المسبحة", tab_azkar: "الأذكار", tab_tracker: "الورد اليومي", 
         tab_duas: "الأدعية", tab_quran: "القرآن", tab_names: "الأسماء", tab_stories: "قصص",
         btn_reset: "تصفير العداد", azkar_morning: "الصباح", azkar_evening: "المساء", azkar_sleep: "النوم",
@@ -26,7 +27,8 @@ const UI_TEXT = {
         ad_space: "مساحة إعلانية (تظهر هنا بعد موافقة أدسنس)"
     },
     en: {
-        header_dua: "O Allah, forgive him and have mercy on him",
+        header_dua_m: "O Allah, forgive him and have mercy on him",
+        header_dua_f: "O Allah, forgive her and have mercy on her",
         tab_tasbeeh: "Tasbeeh", tab_azkar: "Azkar", tab_tracker: "Daily Wird", 
         tab_duas: "Duas", tab_quran: "Quran", tab_names: "Names", tab_stories: "Stories",
         btn_reset: "Reset Counter", azkar_morning: "Morning", azkar_evening: "Evening", azkar_sleep: "Sleep",
@@ -51,6 +53,7 @@ const UI_TEXT = {
 
 let currentAzkarType = 'morning';
 let activeDuaType = 'deceased';
+let currentGender = 'm'; 
 
 function toggleLanguage() { 
     currentLang = currentLang === 'ar' ? 'en' : 'ar'; 
@@ -65,15 +68,22 @@ function applyLanguage() {
     document.getElementById('langToggleBtn').innerText = currentLang === 'ar' ? 'EN' : 'عربي';
     
     document.querySelectorAll('[data-i18n]').forEach(el => { 
-        const key = el.getAttribute('data-i18n'); 
-        if (UI_TEXT[currentLang] && UI_TEXT[currentLang][key]) { 
+        const key = el.getAttribute('data-i18n');
+        
+        if (key === 'header_dua') {
+            const duaKey = currentGender === 'f' ? 'header_dua_f' : 'header_dua_m';
+            if (UI_TEXT[currentLang] && UI_TEXT[currentLang][duaKey]) {
+                el.innerText = UI_TEXT[currentLang][duaKey];
+            }
+        } 
+        else if (UI_TEXT[currentLang] && UI_TEXT[currentLang][key]) { 
             el.innerText = UI_TEXT[currentLang][key]; 
         } 
     });
     
     const nameInput = document.getElementById('deceasedNameInput');
     if (nameInput) {
-        nameInput.placeholder = currentLang === 'ar' ? 'مثال: المرحوم أحمد محمود' : 'Ex: John Doe';
+        nameInput.placeholder = currentLang === 'ar' ? 'مثال: أحمد محمود' : 'Ex: John Doe';
     }
     
     updateUI();
@@ -118,7 +128,7 @@ function switchTab(id, btn) {
 }
 
 function updateUI() { 
-    updateCounterUI(); 
+    if(typeof updateCounterUI === 'function') updateCounterUI(); 
     renderActiveDua(); 
     if (typeof renderTracker === 'function') renderTracker(); 
     if (typeof renderNames === 'function') renderNames(); 
@@ -126,20 +136,28 @@ function updateUI() {
 }
 
 function updateCounterUI() { 
-    document.getElementById('totalCounter').textContent = state.count; 
-    if(typeof TASBEEH_AZKAR !== 'undefined') {
+    const counterEl = document.getElementById('totalCounter');
+    if(counterEl && typeof state !== 'undefined') {
+        counterEl.textContent = state.count; 
+    }
+    
+    if(typeof TASBEEH_AZKAR !== 'undefined' && typeof state !== 'undefined') {
         const tasbeehData = TASBEEH_AZKAR[currentLang] || TASBEEH_AZKAR['ar'];
         if(tasbeehData) document.getElementById('dhikrText').textContent = tasbeehData[state.currentZekrIdx]; 
     }
-    let currentBatch = (state.count % 33); 
-    if (state.count > 0 && currentBatch === 0) currentBatch = 33; 
-    document.getElementById('batchCounter').textContent = `${currentBatch} / 33`; 
+    
+    if(typeof state !== 'undefined') {
+        let currentBatch = (state.count % 33); 
+        if (state.count > 0 && currentBatch === 0) currentBatch = 33; 
+        const batchEl = document.getElementById('batchCounter');
+        if(batchEl) batchEl.textContent = `${currentBatch} / 33`; 
+    }
 }
 
 function renderAzkar(type) { 
     if (typeof checkAzkarAutoReset === 'function') checkAzkarAutoReset(); 
     const list = document.getElementById('azkarList');
-    if(typeof AZKAR === 'undefined') return;
+    if(!list || typeof AZKAR === 'undefined') return;
     
     const azkarData = AZKAR[currentLang] || AZKAR['ar']; 
     if(!azkarData || !azkarData[type]) return;
@@ -149,7 +167,7 @@ function renderAzkar(type) {
     
     azkarData[type].forEach((zekr, index) => {
         const key = `${type}_${index}`; 
-        const currentCount = state.azkarProgress[key] || 0; 
+        const currentCount = (typeof state !== 'undefined' && state.azkarProgress[key]) ? state.azkarProgress[key] : 0; 
         const target = zekr.c; 
         const isCompleted = currentCount >= target;
         const btnClass = isCompleted ? 'zekr-count-btn completed' : 'zekr-count-btn';
@@ -182,6 +200,63 @@ function toggleDuaCategory(type, btn) {
     renderActiveDua(); 
 }
 
+// دالة تحويل الضمائر الذكية (المحسنة للغة العربية)
+function adaptDuaForGender(text, gender, lang) {
+    if (gender === 'm') return text;
+    
+    if (lang === 'ar') {
+        return text
+            // الضمائر المنفصلة وحروف الجر (مراعاة الفواصل والنقاط)
+            .replace(/ له(?=[\s،.]|$)/g, ' لها')
+            .replace(/ عنه(?=[\s،.]|$)/g, ' عنها')
+            .replace(/ إنه(?=[\s،.]|$)/g, ' إنها')
+            .replace(/ إليه(?=[\s،.]|$)/g, ' إليها')
+            .replace(/ عليه(?=[\s،.]|$)/g, ' عليها')
+            .replace(/ فيه(?=[\s،.]|$)/g, ' فيها')
+            
+            // الأفعال والأسماء
+            .replace(/ارحمه/g, 'ارحمها')
+            .replace(/فارحمه/g, 'فارحمها')
+            .replace(/عافه/g, 'عافها')
+            .replace(/نزله/g, 'نزلها')
+            .replace(/مدخله/g, 'مدخلها')
+            .replace(/قبره/g, 'قبرها')
+            .replace(/داره/g, 'دارها')
+            .replace(/أهله/g, 'أهلها')
+            .replace(/أبدله/g, 'أبدلها')
+            .replace(/أدخله/g, 'أدخلها')
+            .replace(/أعذه/g, 'أعذها')
+            .replace(/بصره/g, 'بصرها')
+            .replace(/تجعله/g, 'تجعلها')
+            .replace(/فقه/g, 'فقها')
+            .replace(/حسناته/g, 'حسناتها')
+            .replace(/سيئاته/g, 'سيئاتها')
+            .replace(/آنسه/g, 'آنسها')
+            .replace(/وحدته/g, 'وحدتها')
+            .replace(/وحشته/g, 'وحشتها')
+            .replace(/غربته/g, 'غربتها')
+            .replace(/أنزله/g, 'أنزلها')
+            .replace(/يمينه/g, 'يمينها')
+            .replace(/تبعثه/g, 'تبعثها')
+            .replace(/تعذبه/g, 'تعذبها')
+            .replace(/أسكنه/g, 'أسكنها')
+            .replace(/احشره/g, 'احشرها')
+            .replace(/نفسه/g, 'نفسها')
+            
+            // الحالات الخاصة والصفات
+            .replace(/كان محسناً/g, 'كانت محسنةً')
+            .replace(/كان مسيئاً/g, 'كانت مسيئةً')
+            .replace(/آمناً مطمئناً/g, 'آمنةً مطمئنةً')
+            .replace(/جاء ببابك/g, 'جاءت ببابك')
+            .replace(/أناخ بجنابك/g, 'أناخت بجنابك');
+    } else {
+        return text
+            .replace(/\bhim\b/g, 'her')
+            .replace(/\bhis\b/g, 'her')
+            .replace(/\bhe\b/g, 'she');
+    }
+}
+
 function renderActiveDua() { 
     if(typeof DECEASED_DUAS === 'undefined' || typeof GENERAL_DUAS === 'undefined') return; 
     const isDeceased = activeDuaType === 'deceased'; 
@@ -190,12 +265,19 @@ function renderActiveDua() {
     if (!arr) return;
 
     const list = document.getElementById('duasList');
+    if(!list) return;
+    
     let html = '';
     
     arr.forEach((dua, index) => {
+        let finalDua = dua;
+        if (isDeceased) {
+            finalDua = adaptDuaForGender(dua, currentGender, currentLang);
+        }
+
         html += `<div class="zekr-item">
                     <div class="zekr-text-wrap" style="font-family:'Amiri'; text-align: justify; color: var(--primary); font-weight: bold; font-size: 1.5rem;">
-                        ${dua}
+                        ${finalDua}
                     </div>
                     <div class="zekr-bottom-row" style="justify-content: center;">
                         <button class="copy-btn" onclick="copySpecificDua(${index}, ${isDeceased})" style="width: 100%; justify-content: center; border-radius: 30px; font-size: 1.1rem; padding: 12px;">
@@ -210,15 +292,18 @@ function renderActiveDua() {
 function copySpecificDua(index, isDeceased) {
     const source = isDeceased ? DECEASED_DUAS : GENERAL_DUAS;
     const arr = source[currentLang] || source['ar'];
-    const text = arr[index];
+    let text = arr[index];
     
-    const footerText = currentLang === 'ar' ? `\n\n(صدقة جارية عن روح ${currentDeceasedName})` : `\n\n(Sadaqa for ${currentDeceasedName})`; 
+    if(isDeceased) {
+        text = adaptDuaForGender(text, currentGender, currentLang);
+    }
+    
+    const footerText = currentLang === 'ar' ? `\n\n(صدقة جارية عن روح ${document.title.split('|')[0].trim()})` : `\n\n(Sadaqa for ${document.title.split('|')[0].trim()})`; 
     const footer = isDeceased ? footerText : ""; 
     
     navigator.clipboard.writeText(text + footer).then(() => {
         alert(currentLang === 'ar' ? 'تم النسخ!' : 'Copied!');
         
-        // 💡 إرسال حدث (Event) لإحصائيات جوجل عند نسخ المستخدم لأي دعاء
         if (typeof gtag === 'function') {
             gtag('event', 'copy_dua_clicked', {
                 'dua_type': isDeceased ? 'deceased' : 'general'
@@ -234,9 +319,11 @@ function renderTracker() {
     if(!arr) return;
 
     const list = document.getElementById('trackerList');
+    if(!list) return;
+    
     let html = '';
     arr.forEach((task, index) => {
-        const isDone = state.trackerTasks[index] ? true : false;
+        const isDone = (typeof state !== 'undefined' && state.trackerTasks[index]) ? true : false;
         html += `<div class="task-item ${isDone ? 'done' : ''}" onclick="toggleTask(${index})">
                     <input type="checkbox" class="task-checkbox" ${isDone ? 'checked' : ''}>
                     <span class="task-text">${task}</span>
@@ -251,6 +338,8 @@ function renderNames() {
     if(!arr) return;
 
     const grid = document.getElementById('namesGrid');
+    if(!grid) return;
+    
     let html = '';
     arr.forEach(item => {
         html += `<div class="name-card">
@@ -267,6 +356,8 @@ function renderStories() {
     if(!arr) return;
 
     const list = document.getElementById('storiesList');
+    if(!list) return;
+    
     let html = '';
     arr.forEach(story => {
         html += `<div class="story-card">
@@ -280,10 +371,16 @@ function renderStories() {
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const customName = urlParams.get('name');
+    currentGender = urlParams.get('g') || 'm'; 
+    
     if (customName && customName.trim() !== "") { 
-        currentDeceasedName = customName.trim(); 
+        let cleanName = customName.replace(/المرحومة/g, '').replace(/المرحوم/g, '').trim();
+        let titlePrefix = (currentGender === 'f') ? 'المرحومة' : 'المرحوم';
+        
+        currentDeceasedName = `${titlePrefix} ${cleanName}`; 
         localStorage.setItem('savedDeceasedName', currentDeceasedName); 
     }
+    
     document.querySelectorAll('.deceased-name').forEach(el => el.textContent = currentDeceasedName); 
     document.title = currentDeceasedName + " | Sadaqa";
     
