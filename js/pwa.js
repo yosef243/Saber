@@ -1,162 +1,280 @@
-// ==========================================
-// ملف pwa.js (الخدمات، التثبيت، والمشاركة)
-// ==========================================
+/* ==========================================
+   ملف pwa.js (إدارة التثبيت، التحديثات، والمشاركة) - النسخة النهائية المحسنة
+   ========================================== */
 
-// 1. تثبيت التطبيق (PWA Install)
 let deferredPrompt;
-const installBtn = document.createElement('button');
-installBtn.style.cssText = 'position:fixed;bottom:20px;right:20px;background:var(--primary);color:white;border:none;padding:12px 20px;border-radius:30px;font-weight:bold;z-index:1000;box-shadow:0 4px 15px rgba(0,0,0,0.3);display:none;cursor:pointer;';
-document.body.appendChild(installBtn);
+let manifestBlobUrl = null;
 
-window.addEventListener('beforeinstallprompt', (e) => { 
-    e.preventDefault(); 
-    deferredPrompt = e; 
-    updateInstallBtnLang();
-    installBtn.style.display = 'block'; 
+// ==============================
+// توحيد مصدر اللغة (Single Source of Truth)
+// ==============================
+function getLang() {
+  return (window.currentLang === 'en' || window.currentLang === 'ar')
+    ? window.currentLang
+    : (localStorage.getItem('appLang') || 'ar');
+}
+
+function isArabic() {
+  return getLang() === 'ar';
+}
+
+// ==============================
+// دالة ذكية لتنظيف الرابط ومنع أخطاء الـ index.html/
+// - تطبيع /index.html -> /
+// - ضمان trailing slash للمسارات غير .html
+// ==============================
+function getCleanUrl() {
+  const u = new URL(window.location.href);
+
+  // normalize index.html -> /
+  if (u.pathname.endsWith('/index.html')) {
+    u.pathname = u.pathname.replace(/\/index\.html$/, '/');
+  }
+
+  // ensure trailing slash unless it is a .html (other than index.html)
+  if (!u.pathname.endsWith('/')) {
+    if (!u.pathname.endsWith('.html')) u.pathname += '/';
+  }
+
+  return `${u.origin}${u.pathname}`;
+}
+
+// ==============================
+// تسجيل وتحديث الـ Service Worker
+// ==============================
+function initPWA() {
+  if (!('serviceWorker' in navigator)) return;
+
+  navigator.serviceWorker.register('/Saber/sw.js', { scope: '/Saber/' })
+    .then((reg) => {
+      if (reg.waiting) promptUpdate(reg);
+
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        if (!newWorker) return;
+
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            promptUpdate(reg);
+          }
+        });
+      });
+    })
+    .catch(err => console.error('SW Registration failed:', err));
+
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (refreshing) return;
+    refreshing = true;
+    window.location.reload();
+  });
+}
+
+function promptUpdate(reg) {
+  const msg = isArabic()
+    ? 'تحديث جديد متاح! هل تريد التحديث الآن لضمان عمل التطبيق بكفاءة؟'
+    : 'New update available! Update now?';
+
+  if (confirm(msg)) {
+    reg.waiting?.postMessage({ type: 'SKIP_WAITING' });
+  }
+}
+
+// ==============================
+// إدارة زر التثبيت (Install Prompt)
+// ==============================
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallButton();
 });
 
-installBtn.onclick = () => { 
-    if (deferredPrompt) { 
-        deferredPrompt.prompt(); 
-        deferredPrompt.userChoice.then((choice) => { 
-            if (choice.outcome === 'accepted') installBtn.style.display = 'none'; 
-            deferredPrompt = null; 
-        }); 
-    } 
-};
+// Retry خفيف محدود لو header غير جاهز بعد
+function showInstallButton(retryCount = 0) {
+  const header = document.querySelector('header');
+
+  // إن لم يكن DOM جاهزًا بعد، أعد المحاولة مرات قليلة فقط
+  if (!header) {
+    if (retryCount < 10) setTimeout(() => showInstallButton(retryCount + 1), 50);
+    return;
+  }
+
+  if (document.getElementById('installAppBtn')) return;
+
+  const btn = document.createElement('button');
+  btn.id = 'installAppBtn';
+  btn.className = 'sadaqa-btn';
+  btn.style.marginTop = '15px';
+  btn.style.width = 'auto';
+  btn.style.padding = '8px 20px';
+
+  btn.onclick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+
+    try {
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') btn.style.display = 'none';
+    } finally {
+      deferredPrompt = null;
+    }
+  };
+
+  header.appendChild(btn);
+  updateInstallBtnLang();
+}
 
 function updateInstallBtnLang() {
-    if(installBtn.style.display === 'block') { 
-        installBtn.innerText = currentLang === 'ar' ? '📲 تثبيت التطبيق' : '📲 Install App'; 
+  const btn = document.getElementById('installAppBtn');
+  if (!btn) return;
+  btn.textContent = isArabic() ? '📲 تثبيت التطبيق' : '📲 Install App';
+}
+window.updateInstallBtnLang = updateInstallBtnLang;
+
+// ==============================
+// النسخ الآمن (Clipboard + Fallback)
+// ==============================
+async function safeCopy(text) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
     }
-}
-
-// 2. تحديث المانيفست واسم التطبيق ديناميكياً
-function updateDynamicManifest(deceasedName) {
-    const manifestElement = document.querySelector('link[rel="manifest"]');
-    if (!manifestElement) return;
-
-    const basePath = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
-    const startUrl = window.location.href; 
-
-    const dynamicManifest = {
-        "name": "صدقة جارية | " + deceasedName,
-        "short_name": "Sadaqa",
-        "start_url": startUrl,
-        "display": "standalone",
-        "background_color": "#F4F9F4",
-        "theme_color": "#1E6F5C",
-        "icons": [
-            {"src": basePath + "icons/icon-192x192.png", "sizes": "192x192", "type": "image/png"},
-            {"src": basePath + "icons/icon-512x512.png", "sizes": "512x512", "type": "image/png"}
-        ]
-    };
-
-    const stringManifest = JSON.stringify(dynamicManifest);
-    const blob = new Blob([stringManifest], {type: 'application/json'});
-    const manifestURL = URL.createObjectURL(blob);
-    manifestElement.setAttribute('href', manifestURL);
-}
-
-// 3. تسجيل الـ Service Worker (العمل بدون إنترنت والتحديثات)
-function initPWA() {
-    if ('serviceWorker' in navigator) { 
-        navigator.serviceWorker.register('sw.js').then(reg => { 
-            reg.addEventListener('updatefound', () => { 
-                const newWorker = reg.installing; 
-                newWorker.addEventListener('statechange', () => { 
-                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) { 
-                        if(confirm(currentLang === 'ar' ? 'تحديث جديد متاح! هل تريد التحديث؟' : 'New update available! Refresh?')) {
-                            window.location.reload(); 
-                        }
-                    } 
-                }); 
-            }); 
-        }); 
+    throw new Error('Clipboard API not available');
+  } catch {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      const ok = document.execCommand('copy');
+      ta.remove();
+      return ok;
+    } catch {
+      ta.remove();
+      return false;
     }
+  }
 }
+window.safeCopy = window.safeCopy || safeCopy;
 
-// 4. مشاركة الصفحة الحالية (ترقية زر المشاركة ليصبح ذكياً)
-function shareCurrentPage() { 
-    // الحصول على الاسم المنظف بدون ألقاب
-    let cleanName = document.title.split('|')[0].replace(/المرحومة/g, '').replace(/المرحوم/g, '').trim();
-    let prefix = (typeof currentGender !== 'undefined' && currentGender === 'f') ? 'المرحومة' : 'المرحوم';
-    
-    const shareTitle = `${prefix} ${cleanName}`;
-    const textAr = `نسألكم الدعاء بالمغفرة والرحمة لـ (${shareTitle}).\nافتح الرابط لقراءة الأذكار بنية الصدقة الجارية:\n${window.location.href}`;
-    const textEn = `Please pray for (${cleanName}).\nOpen the link to read Azkar as Sadaqa Jariyah:\n${window.location.href}`;
-    const shareText = currentLang === 'ar' ? textAr : textEn;
+// ==============================
+// المانيفست الديناميكي (مع حماية الذاكرة + icons absolute)
+// ==============================
+window.updateDynamicManifest = function (deceasedName) {
+  const baseIconPath = `${window.location.origin}/Saber/icons/`;
 
-    if (navigator.share) {
-        navigator.share({ title: shareTitle, text: shareText }); 
-    } else { 
-        window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`); 
-    } 
-}
+  const manifest = {
+    name: `صدقة جارية | ${deceasedName}`,
+    short_name: 'صدقة جارية',
+    start_url: getCleanUrl() + window.location.search,
+    display: 'standalone',
+    background_color: '#1E6F5C',
+    theme_color: '#1E6F5C',
+    icons: [
+      { src: `${baseIconPath}icon-192x192.png`, sizes: '192x192', type: 'image/png' },
+      { src: `${baseIconPath}icon-512x512.png`, sizes: '512x512', type: 'image/png' }
+    ]
+  };
 
-// 5. النوافذ المنبثقة وتوليد الروابط
-function openModal() { 
-    document.getElementById('sadaqaModal').style.display = 'flex'; 
-    document.getElementById('step1').style.display = 'block'; 
-    document.getElementById('step2').style.display = 'none'; 
-    document.getElementById('deceasedNameInput').value = ''; 
-    // إعادة تعيين الراديو للذكر افتراضياً عند فتح النافذة
-    const maleRadio = document.querySelector('input[name="gender"][value="m"]');
-    if(maleRadio) maleRadio.checked = true;
-}
+  const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
 
-function closeModal() { 
-    document.getElementById('sadaqaModal').style.display = 'none'; 
-}
+  if (manifestBlobUrl) URL.revokeObjectURL(manifestBlobUrl);
+  manifestBlobUrl = URL.createObjectURL(blob);
 
-function generateSadaqaLink() { 
-    let name = document.getElementById('deceasedNameInput').value.trim(); 
-    if (!name) {
-        alert(currentLang === 'ar' ? "الرجاء كتابة اسم المتوفى أولاً" : "Please enter the deceased's name");
-        return; 
+  let manifestLink = document.querySelector('link[rel="manifest"]');
+  if (!manifestLink) {
+    manifestLink = document.createElement('link');
+    manifestLink.rel = 'manifest';
+    document.head.appendChild(manifestLink);
+  }
+  manifestLink.href = manifestBlobUrl;
+};
+
+// ==============================
+// المشاركة
+// ==============================
+window.shareCurrentPage = function () {
+  const currentUrl = getCleanUrl() + window.location.search;
+  const deceasedName = window.currentDeceasedName || 'من نحب';
+
+  const title = isArabic() ? `صدقة جارية | ${deceasedName}` : `Sadaqa | ${deceasedName}`;
+  const text = isArabic()
+    ? `نسألكم الدعاء وقراءة الأذكار بنية الصدقة الجارية عن ${deceasedName}`
+    : `Please pray and read Azkar for ${deceasedName}`;
+
+  if (navigator.share) {
+    navigator.share({ title, text, url: currentUrl }).catch(() => {});
+  } else {
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text + ' \n ' + currentUrl)}`;
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+  }
+};
+
+// ==============================
+// توليد روابط الصدقة الجارية
+// ==============================
+window.generateSadaqaLink = function () {
+  const nameInputEl = document.getElementById('deceasedNameInput');
+  const nameInput = (nameInputEl?.value || '').trim();
+
+  if (!nameInput) {
+    alert(isArabic() ? 'يرجى إدخال الاسم أولاً' : 'Please enter a name');
+    return;
+  }
+
+  const genderElement = document.querySelector('input[name="gender"]:checked');
+  const gender = genderElement ? genderElement.value : 'm';
+
+  const cleanBase = getCleanUrl();
+  const generatedUrl = `${cleanBase}?name=${encodeURIComponent(nameInput)}&g=${gender}`;
+
+  document.getElementById('generatedLinkUrl').value = generatedUrl;
+  document.getElementById('step1').style.display = 'none';
+  document.getElementById('step2').style.display = 'block';
+
+  if (typeof gtag === 'function') {
+    gtag('event', 'generate_link', {
+      event_category: 'Sadaqa',
+      event_label: nameInput
+    });
+  }
+};
+
+// ==============================
+// نسخ الرسالة مع الرابط لزيادة الانتشار
+// ==============================
+window.copyLinkAction = async function () {
+  const link = document.getElementById('generatedLinkUrl').value;
+
+  const rawName = (document.getElementById('deceasedNameInput')?.value || '').trim();
+  const displayName = rawName || window.currentDeceasedName || (isArabic() ? 'من نحب' : 'a loved one');
+
+  const viralMessage = isArabic()
+    ? `صدقة جارية عن روح ${displayName} 🤲\nشاركونا الأجر واقرأوا الأذكار والقرآن من هنا:\n${link}`
+    : `Sadaqa Jariyah for ${displayName} 🤲\nPlease read Azkar and Quran here:\n${link}`;
+
+  const success = await safeCopy(viralMessage);
+  if (success) {
+    const btn = document.querySelector('.btn-outline');
+    if (btn) {
+      const originalText = btn.textContent;
+      btn.textContent = isArabic() ? '✅ تم النسخ!' : '✅ Copied!';
+      setTimeout(() => { btn.textContent = originalText; }, 2000);
     }
-    
-    // تنظيف الاسم من الألقاب إذا كتبها المستخدم
-    name = name.replace(/المرحومة/g, '').replace(/المرحوم/g, '').trim();
+  }
+};
 
-    // سحب نوع الجنس المختار
-    const genderNode = document.querySelector('input[name="gender"]:checked');
-    const gender = genderNode ? genderNode.value : 'm';
-    
-    if (typeof gtag === 'function') { 
-        gtag('event', 'create_sadaqa_link', { 'created_for': name, 'gender': gender }); 
-    } 
-    
-    const baseUrl = window.location.href.split('?')[0]; 
-    const newUrl = `${baseUrl}?name=${encodeURIComponent(name)}&g=${gender}`; 
-    
-    document.getElementById('generatedLinkUrl').value = newUrl; 
-    document.getElementById('step1').style.display = 'none'; 
-    document.getElementById('step2').style.display = 'block'; 
-}
+// ==============================
+// فتح الرابط في تبويب جديد لتحسين الـ UX
+// ==============================
+window.openLinkAction = function () {
+  const link = document.getElementById('generatedLinkUrl').value;
+  window.open(link, '_blank', 'noopener,noreferrer');
+};
 
-// 6. النسخ الذكي للرسائل والروابط الجديدة
-function copyLinkAction() { 
-    const linkInput = document.getElementById('generatedLinkUrl').value; 
-    let nameInput = document.getElementById('deceasedNameInput').value.trim(); 
-    
-    // تنظيف الاسم
-    nameInput = nameInput.replace(/المرحومة/g, '').replace(/المرحوم/g, '').trim();
-
-    // تحديد اللقب للرسالة بناءً على اختيار المستخدم
-    const genderNode = document.querySelector('input[name="gender"]:checked');
-    const gender = genderNode ? genderNode.value : 'm';
-    const prefix = gender === 'f' ? 'المرحومة' : 'المرحوم';
-    
-    const message = currentLang === 'ar' 
-        ? `صدقة جارية عن روح (${prefix} ${nameInput})\nشاركونا الأجر في قراءة القرآن والأذكار والمسبحة عبر هذا الرابط:\n${linkInput}`
-        : `Sadaqa Jariyah for (${nameInput})\nJoin us in reading Azkar via this link:\n${linkInput}`;
-        
-    navigator.clipboard.writeText(message).then(() => {
-        alert(currentLang === 'ar' ? 'تم نسخ الرسالة مع الرابط بنجاح!' : 'Message and link copied!');
-    }); 
-}
-
-function openLinkAction() { 
-    window.open(document.getElementById('generatedLinkUrl').value, '_blank'); 
-}
+// تشغيل الـ PWA عند تحميل الصفحة
+window.addEventListener('load', initPWA);
