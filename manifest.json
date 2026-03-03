@@ -2,13 +2,10 @@
   "name": "صدقة جارية | Sadaqa",
   "short_name": "Sadaqa",
   "id": "/Saber/",
-  "start_url": ".",
+  "start_url": "/Saber/index.html",
   "scope": "/Saber/",
   "display": "standalone",
-  "display_override": [
-    "standalone",
-    "minimal-ui"
-  ],
+  "display_override": ["standalone", "minimal-ui"],
   "background_color": "#F4F9F4",
   "theme_color": "#1E6F5C",
   "description": "تطبيق صدقة جارية، مسبحة، وأذكار",
@@ -20,13 +17,13 @@
       "src": "icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
       "src": "icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ]
 }

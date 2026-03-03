@@ -664,8 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
     translateI18nNodes();
 
     // manifest
-   // if (typeof updateDynamicManifest === 'function') updateDynamicManifest(window.currentDeceasedName);
-
+    if (typeof updateDynamicManifest === 'function') updateDynamicManifest(window.currentDeceasedName);
 
     initTheme();
 
