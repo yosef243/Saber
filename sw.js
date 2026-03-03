@@ -1,5 +1,5 @@
 // v0.0.5 - GitHub Pages under /Saber/ (Production Ready - Final)
-const VERSION = 'v0.0.4';
+const VERSION = 'v0.0.5';
 const SCOPE = '/Saber/';
 const CACHE_NAME = `sabry-sadaqa-${VERSION}`;
 
