@@ -20,8 +20,6 @@ function isArabic() {
 
 // ==============================
 // دالة ذكية لتنظيف الرابط ومنع أخطاء الـ index.html/
-// - تطبيع /index.html -> /
-// - ضمان trailing slash للمسارات غير .html
 // ==============================
 function getCleanUrl() {
   const u = new URL(window.location.href);
@@ -93,7 +91,6 @@ window.addEventListener('beforeinstallprompt', (e) => {
 function showInstallButton(retryCount = 0) {
   const header = document.querySelector('header');
 
-  // إن لم يكن DOM جاهزًا بعد، أعد المحاولة مرات قليلة فقط
   if (!header) {
     if (retryCount < 10) setTimeout(() => showInstallButton(retryCount + 1), 50);
     return;
@@ -195,7 +192,7 @@ window.updateDynamicManifest = function (deceasedName) {
 };
 
 // ==============================
-// المشاركة
+// المشاركة (تم التعديل لإضافة المسافات \n\n)
 // ==============================
 window.shareCurrentPage = function () {
   const currentUrl = getCleanUrl() + window.location.search;
@@ -203,13 +200,13 @@ window.shareCurrentPage = function () {
 
   const title = isArabic() ? `صدقة جارية | ${deceasedName}` : `Sadaqa | ${deceasedName}`;
   const text = isArabic()
-    ? `نسألكم الدعاء وقراءة الأذكار بنية الصدقة الجارية عن ${deceasedName}`
-    : `Please pray and read Azkar for ${deceasedName}`;
+    ? `نسألكم الدعاء وقراءة الأذكار بنية الصدقة الجارية عن ${deceasedName}\n\n`
+    : `Please pray and read Azkar for ${deceasedName}\n\n`;
 
   if (navigator.share) {
-    navigator.share({ title, text, url: currentUrl }).catch(() => {});
+    navigator.share({ title: title, text: text, url: currentUrl }).catch(() => {});
   } else {
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text + ' \n ' + currentUrl)}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text + currentUrl)}`;
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
   }
 };
@@ -245,7 +242,7 @@ window.generateSadaqaLink = function () {
 };
 
 // ==============================
-// نسخ الرسالة مع الرابط لزيادة الانتشار
+// نسخ الرسالة مع الرابط لزيادة الانتشار (تم التعديل لإضافة المسافات \n\n)
 // ==============================
 window.copyLinkAction = async function () {
   const link = document.getElementById('generatedLinkUrl').value;
@@ -254,8 +251,8 @@ window.copyLinkAction = async function () {
   const displayName = rawName || window.currentDeceasedName || (isArabic() ? 'من نحب' : 'a loved one');
 
   const viralMessage = isArabic()
-    ? `صدقة جارية عن روح ${displayName} 🤲\nشاركونا الأجر واقرأوا الأذكار والقرآن من هنا:\n${link}`
-    : `Sadaqa Jariyah for ${displayName} 🤲\nPlease read Azkar and Quran here:\n${link}`;
+    ? `صدقة جارية عن روح ${displayName} 🤲\nشاركونا الأجر واقرأوا الأذكار والقرآن من هنا:\n\n${link}`
+    : `Sadaqa Jariyah for ${displayName} 🤲\nPlease read Azkar and Quran here:\n\n${link}`;
 
   const success = await safeCopy(viralMessage);
   if (success) {
