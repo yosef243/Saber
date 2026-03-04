@@ -252,7 +252,7 @@ window.copyLinkAction = async function () {
 
   const viralMessage = isArabic()
     ? `صدقة جارية عن روح ${displayName} 🤲\nشاركونا الأجر واقرأوا الأذكار والقرآن من هنا:\n\n${link}`
-    : `Sadaqa Jariyah for ${displayName} 🤲\nPlease read Azkar and Quran here:\n\n${link}`;
+    : `Sadaqa Jariyah for ${displayName} 🤲\nPlease read Azkar and Quran here:\n\n${link} `;
 
   const success = await safeCopy(viralMessage);
   if (success) {
