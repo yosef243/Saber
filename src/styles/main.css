@@ -1,0 +1,361 @@
+* { box-sizing: border-box; }
+html { min-width: 280px; }
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--text);
+  font: 16px/1.55 system-ui, 'Tajawal', sans-serif;
+  padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+}
+button, input, select, textarea { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
+#app { max-width: 680px; margin: 0 auto; }
+.site-header { padding: 18px 20px 12px; text-align: center; }
+.site-header h1 { margin: 18px 0 0; color: var(--primary); font-size: clamp(1.55rem, 6vw, 2.2rem); overflow-wrap: anywhere; }
+.memorial-message { color: var(--muted); white-space: pre-wrap; overflow-wrap: anywhere; }
+.header-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.text-button { border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--text); padding: 8px 14px; min-height: 44px; cursor: pointer; }
+.theme-picker { display: flex; gap: 8px; }
+.theme-swatch { width: 36px; height: 36px; border: 2px solid var(--surface); border-radius: 50%; cursor: pointer; }
+.theme-swatch[aria-pressed='true'] { outline: 2px solid var(--primary); outline-offset: 2px; }
+.navbar { position: fixed; z-index: 20; inset-inline: 0; bottom: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; max-width: 680px; margin: 0 auto; padding: 8px max(8px, env(safe-area-inset-left)) calc(8px + env(safe-area-inset-bottom)); background: var(--surface); border-top: 1px solid var(--border); box-shadow: 0 -5px 18px #00000012; }
+.navbar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; min-width: 0; min-height: 52px; padding: 4px 2px; border-radius: 10px; text-decoration: none; color: var(--text); white-space: nowrap; }
+.nav-icon { font-size: 1.25rem; line-height: 1; }
+.nav-label { font-size: clamp(.64rem, 2.5vw, .8rem); overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.navbar a[aria-current='page'] { color: var(--surface); background: var(--primary); border-color: var(--primary); }
+body[data-theme='dark'] .navbar a[aria-current='page'] { color: #09261d; }
+main { padding: 0 20px calc(96px + env(safe-area-inset-bottom)); }
+.page { width: 100%; }
+.card, .counter-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: clamp(18px, 4vw, 28px); box-shadow: 0 8px 25px #0000000a; }
+.card h2 { margin: 0 0 16px; color: var(--primary); }
+.card p { color: var(--muted); }
+.counter-card { text-align: center; }
+.counter-title { margin: 0 0 6px; color: var(--primary); font-size: clamp(1.8rem, 7vw, 2.5rem); }
+.counter-progress, .counter-total { margin: 8px 0; color: var(--muted); }
+.counter-button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; width: min(58vw, 220px); height: min(58vw, 220px); margin: 20px auto; border: 0; border-radius: 50%; background: var(--primary); color: white; cursor: pointer; box-shadow: 0 14px 30px #0000002b; touch-action: manipulation; }
+body[data-theme='dark'] .counter-button { color: #09261d; }
+.counter-number { font-size: clamp(3.5rem, 12vw, 5rem); font-weight: 800; line-height: 1; }
+.counter-hint { font-size: .9rem; }
+.counter-notice { min-height: 1.5em; color: var(--primary); font-weight: 700; }
+.counter-controls { display: flex; flex-wrap: wrap; align-items: end; justify-content: center; gap: 10px; margin-top: 18px; }
+.target-label, .field { display: flex; flex-direction: column; gap: 5px; text-align: start; color: var(--muted); font-weight: 600; }
+.target-input { width: 92px; }
+.target-input, .field input, .field select, .field textarea { min-height: 44px; border: 1px solid var(--border); border-radius: 10px; background: var(--background); color: var(--text); padding: 8px 10px; }
+.counter-controls button, .primary-button, .copy-button { min-height: 44px; border: 1px solid var(--primary); border-radius: 10px; padding: 8px 14px; background: var(--primary); color: white; font-weight: 700; cursor: pointer; }
+body[data-theme='dark'] .counter-controls button, body[data-theme='dark'] .primary-button, body[data-theme='dark'] .copy-button { color: #09261d; }
+.counter-preferences { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
+.counter-preferences label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.counter-preferences input { width: 20px; height: 20px; accent-color: var(--primary); }
+.link-list { display: grid; gap: 10px; }
+.link-list a { display: block; padding: 14px; border-radius: 12px; background: var(--background); color: var(--primary); text-decoration: none; font-weight: 700; }
+.memorial-form { display: grid; gap: 16px; }
+.field input, .field select, .field textarea { width: 100%; }
+.generated-link { display: grid; gap: 10px; overflow-wrap: anywhere; }
+.generated-link[hidden] { display: none; }
+.memorial-ad { margin-top: 24px; }
+.memorial-ad.is-filled { padding: 16px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
+@media (max-width: 380px) { main { padding-inline: 14px; } .site-header { padding-inline: 14px; } .navbar { padding-inline: 14px; } .theme-picker { gap: 5px; } .theme-swatch { width: 31px; height: 31px; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
+
+/* Shared memorial dedication */
+.memorial-banner { margin: 0 20px 12px; padding: 14px 18px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; }
+.memorial-banner p { flex: 1 1 250px; margin: 0; color: var(--primary); font-weight: 800; font-size: 1.08rem; overflow-wrap: anywhere; }
+.memorial-banner small { flex-basis: 100%; color: var(--muted); white-space: pre-wrap; overflow-wrap: anywhere; }
+.memorial-badge, .memorial-invite { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding: 6px 12px; border-radius: 999px; color: var(--primary); background: var(--background); text-decoration: none; font-size: .88rem; font-weight: 700; white-space: nowrap; }
+.memorial-invite { color: #fff; background: var(--primary); }
+body[data-theme='dark'] .memorial-invite { color: #09261d; }
+
+/* Duas and azkar */
+.content-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 12px; margin-bottom: 12px; scrollbar-width: thin; }
+.content-tabs button { flex: 0 0 auto; min-height: 44px; border: 1px solid var(--border); border-radius: 999px; padding: 8px 14px; background: var(--background); color: var(--text); font-weight: 700; cursor: pointer; }
+.content-tabs button[aria-selected='true'] { background: var(--primary); border-color: var(--primary); color: #fff; }
+body[data-theme='dark'] .content-tabs button[aria-selected='true'] { color: #09261d; }
+.dua-list, .azkar-list { display: grid; gap: 14px; }
+.dua-card, .azkar-card { padding: 20px; border: 1px solid var(--border); border-radius: 16px; background: var(--background); }
+.dua-card h3 { margin: 0 0 10px; color: var(--primary); font-size: 1.12rem; }
+.dua-arabic, .azkar-text { margin: 8px 0 16px; font: 700 clamp(1.45rem, 5vw, 1.85rem)/1.9 Amiri, 'Noto Naskh Arabic', Georgia, serif; color: var(--text) !important; white-space: pre-line; overflow-wrap: anywhere; }
+.dua-translation { color: var(--muted); line-height: 1.65; }
+.dua-usage { padding: 9px 12px; border-inline-start: 3px solid var(--primary); color: var(--muted); background: var(--surface); font-size: .9rem; }
+.dua-source { display: inline-block; color: var(--primary); font-size: .84rem; text-decoration: underline; text-underline-offset: 3px; }
+.dua-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+.dua-actions button, .azkar-count { min-height: 44px; border: 1px solid var(--primary); border-radius: 10px; padding: 8px 12px; background: var(--primary); color: #fff; font-weight: 700; cursor: pointer; }
+.dua-actions button + button { background: transparent; color: var(--primary); }
+.dua-actions button:disabled { opacity: .6; cursor: wait; }
+body[data-theme='dark'] .dua-actions button:first-child, body[data-theme='dark'] .azkar-count:not(:disabled) { color: #09261d; }
+.action-status { color: var(--muted); font-size: .9rem; }
+.azkar-toolbar { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+.azkar-card.is-complete { border-color: var(--primary); }
+.azkar-count { display: block; margin-top: 14px; }
+.azkar-count:disabled { color: var(--primary); background: var(--surface); cursor: default; }
+
+/* Lightweight Quran index and reader */
+.resume-banner { display: block; padding: 14px 16px; margin-bottom: 16px; background: var(--primary); color: #fff; border-radius: 12px; text-decoration: none; font-weight: 700; }
+body[data-theme='dark'] .resume-banner { color: #09261d; }
+.surah-search { width: 100%; min-height: 46px; margin-bottom: 14px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--background); color: var(--text); }
+.surah-index { display: grid; gap: 8px; max-height: min(68vh, 800px); overflow-y: auto; padding-inline-end: 4px; }
+.surah-row { display: grid; grid-template-columns: 38px minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 66px; padding: 9px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--background); color: var(--text); text-decoration: none; }
+.surah-number { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; color: var(--primary); background: var(--surface); font-weight: 800; }
+.surah-names { display: grid; min-width: 0; }
+.surah-names strong { font-family: Amiri, Georgia, serif; color: var(--primary); font-size: 1.3rem; line-height: 1.3; }
+.surah-names small, .surah-details { color: var(--muted); font-size: .82rem; }
+.surah-details { text-align: end; white-space: nowrap; }
+.reader-back { display: inline-block; color: var(--primary); margin: 4px 0 16px; }
+.reader-title { margin: 0; text-align: center; font: 700 2.2rem/1.5 Amiri, Georgia, serif; color: var(--primary); }
+.reader-subtitle { text-align: center; color: var(--muted); margin: 0 0 16px; }
+.reader-controls { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; }
+.reader-controls button { min-height: 44px; padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--background); color: var(--text); cursor: pointer; }
+.reader-controls button[aria-pressed='true'] { background: var(--primary); color: #fff; }
+.quran-reader { padding: 8px 16px; border-radius: 16px; background: var(--background); }
+.quran-reader.reader-night { background: #111827; color: #f3f4f6; }
+.quran-ayah { position: relative; padding: 22px 4px; border-bottom: 1px solid var(--border); scroll-margin-top: 18px; }
+.quran-ayah:last-child { border-bottom: none; }
+.quran-text { margin: 0 0 12px; text-align: right; font: 400 var(--ayah-size, 32px)/2.15 Amiri, 'Noto Naskh Arabic', Georgia, serif; color: inherit !important; overflow-wrap: anywhere; }
+.ayah-marker { display: inline-grid; place-items: center; min-width: 34px; height: 34px; padding: 0 8px; border: 1px solid var(--primary); border-radius: 50%; color: var(--primary); font-size: .84rem; }
+.reader-night .ayah-marker { color: #5ee0b1; border-color: #5ee0b1; }
+.reader-status { text-align: center; color: var(--muted); }
+@media (max-width: 380px) { .memorial-banner { margin-inline: 14px; } .surah-row { grid-template-columns: 34px minmax(0, 1fr); } .surah-details { grid-column: 2; text-align: start; } .quran-reader { padding-inline: 10px; } }
+
+/* Memorial creation and the migrated collections */
+.memorial-preview { margin-top: 22px; padding: 18px; border: 1px solid var(--border); border-radius: 16px; background: var(--background); }
+.memorial-preview h3, .memorial-preview h4 { margin: 0 0 12px; color: var(--primary); }
+.memorial-preview h4 { margin-top: 18px; }
+.memorial-preview .memorial-banner { margin: 0; }
+.memorial-preview .dua-arabic { margin-bottom: 0; }
+.generated-link { margin-top: 20px; }
+.memorial-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.share-button, .open-button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 8px 14px; border: 1px solid var(--primary); border-radius: 10px; color: var(--primary); text-decoration: none; font-weight: 700; }
+.share-button { background: var(--primary); color: #fff; }
+body[data-theme='dark'] .share-button { color: #09261d; }
+.habit-progress { font-weight: 700; color: var(--primary) !important; }
+.habit-list, .stories-list { display: grid; gap: 10px; }
+.habit-item { display: flex; align-items: center; gap: 12px; min-height: 54px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--background); cursor: pointer; }
+.habit-item input { flex: 0 0 auto; width: 22px; height: 22px; accent-color: var(--primary); }
+.habit-item:has(input:checked) { border-color: var(--primary); }
+.names-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; }
+.name-card, .story-card { padding: 16px; border: 1px solid var(--border); border-radius: 14px; background: var(--background); }
+.name-card h3 { margin: 4px 0 6px; color: var(--primary); font: 700 1.8rem/1.6 Amiri, Georgia, serif; }
+.name-card p { margin: 0; }
+.name-number { color: var(--muted); font-size: .8rem; }
+.story-card summary { color: var(--primary); font-weight: 700; cursor: pointer; }
+.story-card p { margin-bottom: 0; color: var(--text); white-space: pre-line; line-height: 1.85; }
+
+/* Warm, devotional visual system */
+body {
+  font-family: 'Tajawal', 'Cairo', system-ui, sans-serif;
+  background:
+    radial-gradient(ellipse at 50% -15%, #e8ddc74a 0, transparent 48%),
+    var(--background);
+}
+.site-header { padding-top: 20px; }
+.site-header h1 { font-family: Amiri, Georgia, serif; color: var(--primary); letter-spacing: .015em; }
+.text-button { border-color: var(--gold-soft); background: color-mix(in srgb, var(--surface) 88%, transparent); }
+.theme-swatch[aria-pressed='true'] { outline-color: var(--gold); }
+main { padding-bottom: calc(108px + env(safe-area-inset-bottom)); }
+.card, .counter-card {
+  border-color: color-mix(in srgb, var(--gold-soft) 62%, var(--border));
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+}
+.card h2 { font-family: Amiri, Georgia, serif; }
+.navbar {
+  inset-inline: 14px;
+  bottom: calc(10px + env(safe-area-inset-bottom));
+  width: min(640px, calc(100% - 28px));
+  border: 1px solid color-mix(in srgb, var(--gold-soft) 72%, var(--border));
+  border-radius: 22px;
+  padding: 7px 8px;
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 12px 36px #172b211c, inset 0 1px 0 #ffffff70;
+}
+.navbar a { position: relative; min-height: 54px; border-radius: 15px; transition: color .2s ease, background .2s ease, transform .2s ease; }
+.navbar a[aria-current='page'] {
+  color: var(--primary);
+  background: color-mix(in srgb, var(--gold-soft) 28%, transparent);
+}
+.navbar a[aria-current='page']::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--gold);
+  box-shadow: 0 0 9px color-mix(in srgb, var(--gold) 50%, transparent);
+}
+.nav-icon { filter: saturate(.78); }
+.counter-card {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(22px, 6vw, 36px);
+  background: linear-gradient(145deg, var(--surface), color-mix(in srgb, var(--background) 76%, var(--surface)));
+}
+.counter-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: .75;
+}
+.counter-title { font-family: Amiri, Georgia, serif; }
+.counter-progress { color: var(--gold) !important; font-weight: 700; }
+.counter-button {
+  position: relative;
+  isolation: isolate;
+  width: min(64vw, 252px);
+  height: min(64vw, 252px);
+  margin: 24px auto;
+  border: 1px solid color-mix(in srgb, var(--gold) 52%, transparent);
+  padding: 12px;
+  color: var(--primary);
+  background: radial-gradient(circle, var(--dial-face) 66%, transparent 67%),
+    conic-gradient(from -90deg, var(--gold) var(--progress, 0deg), color-mix(in srgb, var(--border) 85%, transparent) 0);
+  box-shadow: 0 18px 38px #14271c24, 0 5px 12px #14271c16, inset 0 2px 4px #ffffffa0;
+  transition: transform .16s ease, filter .2s ease, box-shadow .2s ease;
+  user-select: none;
+}
+.counter-button::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  inset: 10px;
+  border: 1px solid color-mix(in srgb, var(--gold-soft) 65%, transparent);
+  border-radius: 50%;
+  opacity: .7;
+  transition: inset .18s ease, opacity .18s ease;
+}
+.counter-button > span { position: relative; z-index: 1; }
+.counter-button:active { transform: scale(.965); filter: saturate(1.12); box-shadow: 0 7px 18px #14271c24, inset 0 3px 9px #14271c12; }
+.counter-button:active::after { inset: 5px; opacity: 1; animation: bead-ripple .48s ease-out; }
+.counter-number { color: var(--primary); font-variant-numeric: tabular-nums; text-shadow: 0 1px #fff9; }
+.counter-hint { color: var(--muted); font-weight: 600; }
+.target-presets { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.target-presets button {
+  min-width: 64px;
+  min-height: 40px;
+  padding: 7px 16px;
+  border: 1px solid var(--gold-soft);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 88%, var(--gold-soft));
+  color: var(--primary);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease, transform .18s ease;
+}
+.target-presets button[aria-pressed='true'] { color: var(--surface); border-color: var(--primary); background: var(--primary); }
+.target-presets button:active { transform: scale(.96); }
+.counter-controls button, .primary-button, .copy-button, .dua-actions button, .azkar-count {
+  border-color: var(--primary);
+  border-radius: 12px;
+  background: linear-gradient(145deg, var(--primary-soft), var(--primary));
+  box-shadow: 0 4px 11px color-mix(in srgb, var(--primary) 17%, transparent);
+}
+.target-input, .field input, .field select, .field textarea, .surah-search {
+  border-color: color-mix(in srgb, var(--gold-soft) 75%, var(--border));
+  border-radius: 12px;
+}
+.dua-card, .azkar-card, .name-card, .story-card, .surah-row {
+  border-color: color-mix(in srgb, var(--gold-soft) 55%, var(--border));
+  border-radius: 16px;
+  box-shadow: 0 5px 18px #172b2108;
+}
+.dua-arabic, .azkar-text, .quran-text { font-family: Amiri, 'Noto Naskh Arabic', Georgia, serif; }
+.memorial-banner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin: 8px 20px 20px;
+  padding: 30px 22px 22px;
+  overflow: hidden;
+  text-align: center;
+  border: 1px solid color-mix(in srgb, var(--gold) 58%, var(--border));
+  border-radius: 150px 150px 22px 22px / 54px 54px 22px 22px;
+  background: linear-gradient(165deg, color-mix(in srgb, var(--surface) 96%, var(--gold-soft)), var(--surface) 64%);
+  box-shadow: 0 12px 32px #47391e0e, inset 0 1px 0 #ffffffb0;
+}
+.memorial-banner::before {
+  content: '✦';
+  position: absolute;
+  top: 9px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--gold);
+  font-size: 14px;
+  opacity: .8;
+}
+.memorial-copy { display: flex; flex-direction: column; align-items: center; width: 100%; }
+.memorial-kicker { margin: 0; color: var(--muted); font-size: .98rem; font-weight: 600; }
+.memorial-name { max-width: 100%; margin: 4px 0 0; color: var(--primary); font: 700 clamp(2rem, 8vw, 2.8rem)/1.45 Amiri, Georgia, serif; text-shadow: 0 2px 16px color-mix(in srgb, var(--gold) 26%, transparent); overflow-wrap: anywhere; }
+.memorial-divider { position: relative; display: block; width: min(220px, 62%); height: 1px; margin: 11px 0 9px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+.memorial-divider::after { content: '◇'; position: absolute; top: 50%; left: 50%; padding: 0 8px; transform: translate(-50%, -50%); color: var(--gold); background: var(--surface); font-size: .85rem; }
+.memorial-prayer { max-width: 36rem; margin: 0; color: var(--muted); font: 400 1.18rem/1.9 Amiri, Georgia, serif; }
+.memorial-copy small { margin-top: 8px; color: var(--muted); white-space: pre-wrap; overflow-wrap: anywhere; }
+.memorial-badge, .memorial-invite { border: 1px solid var(--gold-soft); background: color-mix(in srgb, var(--gold-soft) 24%, var(--surface)); color: var(--primary); }
+.memorial-invite { border-color: var(--primary); background: var(--primary); color: var(--surface); }
+.memorial-preview .memorial-banner { margin: 0; }
+.memorial-preview .memorial-name { font-size: 2rem; }
+.reader-title, .dua-card h3, .name-card h3 { font-family: Amiri, Georgia, serif; }
+body[data-theme='dark'] .memorial-banner { background: linear-gradient(165deg, #29352b, var(--surface) 70%); }
+body[data-theme='dark'] .memorial-divider::after { background: var(--surface); }
+body[data-theme='dark'] .counter-number { text-shadow: none; }
+@media (max-width: 380px) {
+  .memorial-banner { margin-inline: 14px; padding-inline: 16px; }
+  .navbar { inset-inline: 8px; width: calc(100% - 16px); }
+  .counter-button { width: min(67vw, 224px); height: min(67vw, 224px); }
+}
+@keyframes bead-ripple {
+  0% { opacity: .9; transform: scale(.96); }
+  100% { opacity: 0; transform: scale(1.08); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .counter-button:active::after { animation: none; }
+}
+
+/* Compact memorial identity banner */
+.memorial-banner {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  min-height: 78px;
+  margin: 7px 20px 14px;
+  padding: 9px 14px;
+  text-align: start;
+  border-radius: 18px;
+  border-inline-start: 3px solid var(--gold);
+  background: linear-gradient(100deg, color-mix(in srgb, var(--gold-soft) 20%, var(--surface)), var(--surface) 68%);
+  box-shadow: 0 6px 18px #47391e0b;
+}
+.memorial-banner::before { display: none; }
+.memorial-copy { flex: 1 1 auto; min-width: 0; display: block; }
+.memorial-banner .memorial-kicker { display: inline; flex: initial; margin: 0; color: var(--muted); font-size: .91rem; line-height: 1.45; }
+.memorial-kicker::after { content: ' '; }
+.memorial-name { display: inline; margin: 0; font-size: clamp(1.08rem, 4vw, 1.3rem); line-height: 1.45; text-shadow: 0 1px 8px color-mix(in srgb, var(--gold) 20%, transparent); }
+.memorial-divider { display: none; }
+.memorial-banner .memorial-prayer { display: -webkit-box; flex: initial; max-width: 100%; margin: 2px 0 0; color: var(--muted); overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 1; font: 400 .96rem/1.35 Amiri, Georgia, serif; }
+.memorial-badge, .memorial-invite { flex: 0 0 auto; min-height: 34px; max-width: 112px; padding: 5px 9px; white-space: normal; text-align: center; font-size: .76rem; line-height: 1.2; }
+.memorial-preview .memorial-banner { min-height: 78px; }
+.action-status { display: none; }
+.action-status.is-visible {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0;
+  padding: 7px 12px;
+  border: 1px solid var(--gold-soft);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--gold-soft) 24%, var(--surface));
+  color: var(--primary);
+  font-size: .9rem;
+}
+@media (max-width: 380px) {
+  .memorial-banner { margin-inline: 14px; padding: 8px 10px; gap: 7px; }
+  .memorial-kicker { font-size: .84rem; }
+  .memorial-name { font-size: 1.08rem; }
+  .memorial-prayer { font-size: .88rem; }
+  .memorial-badge, .memorial-invite { max-width: 100px; padding-inline: 7px; font-size: .7rem; }
+}
