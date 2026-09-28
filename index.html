@@ -5,7 +5,38 @@
     <script>
       if (window.location.hostname.includes('github.io')) {
         const cleanPath = window.location.pathname.replace(/^\/Saber(?=\/|$)/, '');
-        const destination = 'https://sabry.pages.dev' + cleanPath + window.location.search + window.location.hash;
+        let query = window.location.search;
+        const hashQuery = window.location.hash.split('?')[1];
+
+        if (!query && !(hashQuery && new URLSearchParams(hashQuery).has('name'))) {
+          try {
+            let profile = null;
+            try {
+              profile = JSON.parse(window.localStorage.getItem('saber.v2.memorial') || 'null');
+            } catch {
+              // A malformed newer profile should not hide valid legacy data.
+            }
+
+            const profileName = typeof profile?.name === 'string' ? profile.name.trim() : '';
+            const savedName = profileName ||
+              window.localStorage.getItem('savedDeceasedName')?.trim() ||
+              window.localStorage.getItem('memorial_name')?.trim();
+
+            if (savedName) {
+              const savedGender = profileName
+                ? profile.gender
+                : window.localStorage.getItem('appGender') || window.localStorage.getItem('memorial_gender');
+              query = '?name=' + encodeURIComponent(savedName) + '&g=' + (savedGender === 'f' ? 'f' : 'm');
+              if (profileName && typeof profile.customMessage === 'string' && profile.customMessage.trim()) {
+                query += '&message=' + encodeURIComponent(profile.customMessage.trim());
+              }
+            }
+          } catch {
+            // Storage may be disabled; still redirect using the original URL.
+          }
+        }
+
+        const destination = 'https://sabry.pages.dev' + cleanPath + query + window.location.hash;
         window.location.replace(destination);
       }
     </script>

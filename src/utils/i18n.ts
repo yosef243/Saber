@@ -2,11 +2,11 @@ import type { Language } from '../types';
 
 const messages = {
   ar: {
-    home: 'المسبحة', azkar: 'الأذكار', duas: 'الأدعية', quran: 'القرآن',
-    more: 'المزيد', create: 'أنشئ صدقة جارية', target: 'الهدف', total: 'المجموع',
+    home: 'السبحة', azkar: 'الأذكار', duas: 'الأدعية', quran: 'القرآن الكريم',
+    create: 'أنشئ صدقة جارية', target: 'الهدف', total: 'المجموع',
     tap: 'اضغط للتسبيح', next: 'الذكر التالي', reset: 'تصفير',
     sound: 'الصوت', vibration: 'الاهتزاز',
-    names: 'أسماء الله الحسنى', stories: 'قصص وعبر', habits: 'الورد اليومي',
+    names: 'أسماء الله الحسنى', habits: 'الورد اليومي',
     completedToday: 'المهام المكتملة اليوم', nameMeaning: 'المعنى',
     createPreview: 'معاينة الصدقة الجارية', previewPrayer: 'معاينة الدعاء',
     copyLink: 'نسخ الرابط', shareWhatsApp: 'شارك عبر واتساب',
@@ -15,10 +15,10 @@ const messages = {
   },
   en: {
     home: 'Tasbeeh', azkar: 'Azkar', duas: 'Duas', quran: 'Quran',
-    more: 'More', create: 'Create Memorial', target: 'Target', total: 'Total',
+    create: 'Create Memorial', target: 'Target', total: 'Total',
     tap: 'Tap to count', next: 'Next dhikr', reset: 'Reset',
     sound: 'Sound', vibration: 'Vibration',
-    names: '99 Names of Allah', stories: 'Stories and lessons', habits: 'Daily habits',
+    names: '99 Names of Allah', habits: 'Daily habits',
     completedToday: 'Tasks completed today', nameMeaning: 'Meaning',
     createPreview: 'Memorial preview', previewPrayer: 'Prayer preview',
     copyLink: 'Copy link', shareWhatsApp: 'Share via WhatsApp',

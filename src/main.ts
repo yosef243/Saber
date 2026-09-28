@@ -8,7 +8,7 @@ import { renderAzkar } from './pages/Azkar';
 import { renderDuas } from './pages/Duas';
 import { renderQuran } from './pages/Quran';
 import { renderCreateMemorial } from './pages/CreateMemorial';
-import { renderMore } from './pages/More';
+import { renderNames } from './pages/Names';
 import { startRouter, type PageId } from './router';
 import type { AppSettings } from './types';
 import { defaultSettings, loadSettings, saveSettings } from './utils/storage';
@@ -75,7 +75,7 @@ function renderPage(page: PageId): void {
     case 'azkar': main.append(renderAzkar(context)); break;
     case 'duas': main.append(renderDuas(context)); break;
     case 'quran': main.append(renderQuran(context)); break;
-    case 'more': main.append(renderMore(context)); break;
+    case 'names': main.append(renderNames(context)); break;
     case 'create-memorial': main.append(renderCreateMemorial(context)); break;
   }
   app.replaceChildren(

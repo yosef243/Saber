@@ -108,7 +108,7 @@ function renderReader(page: HTMLElement, context: PageContext, number: number, r
   content.className = 'quran-reader';
   const preferences = getReaderPreferences();
   function applyPreferences(): void {
-    content.style.setProperty('--ayah-size', `${preferences.fontSize}px`);
+    content.style.setProperty('--ayah-size', `clamp(${preferences.fontSize - 4}px, ${preferences.fontSize / 10}vw, ${preferences.fontSize + 4}px)`);
     content.classList.toggle('reader-night', preferences.nightMode);
     night.setAttribute('aria-pressed', String(preferences.nightMode));
     saveReaderPreferences(preferences);

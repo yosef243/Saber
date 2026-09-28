@@ -6,8 +6,7 @@ const links: { page: PageId; key: Parameters<typeof t>[1]; icon: string }[] = [
   { page: 'home', key: 'home', icon: '📿' },
   { page: 'azkar', key: 'azkar', icon: '☀️' },
   { page: 'duas', key: 'duas', icon: '🤲' },
-  { page: 'quran', key: 'quran', icon: '📖' },
-  { page: 'more', key: 'more', icon: '•••' }
+  { page: 'quran', key: 'quran', icon: '📖' }
 ];
 
 export function renderNavbar(activePage: PageId, language: Language): HTMLElement {
