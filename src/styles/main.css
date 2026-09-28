@@ -127,11 +127,6 @@ body[data-theme='dark'] .resume-banner { color: #09261d; }
 .share-button, .open-button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 8px 14px; border: 1px solid var(--primary); border-radius: 10px; color: var(--primary); text-decoration: none; font-weight: 700; }
 .share-button { background: var(--primary); color: #fff; }
 body[data-theme='dark'] .share-button { color: #09261d; }
-.habit-progress { font-weight: 700; color: var(--primary) !important; }
-.habit-list { display: grid; gap: 10px; }
-.habit-item { display: flex; align-items: center; gap: 12px; min-height: 54px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--background); cursor: pointer; }
-.habit-item input { flex: 0 0 auto; width: 22px; height: 22px; accent-color: var(--primary); }
-.habit-item:has(input:checked) { border-color: var(--primary); }
 .names-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; }
 .name-card { padding: 16px; border: 1px solid var(--border); border-radius: 14px; background: var(--background); }
 .name-card h3 { margin: 4px 0 6px; color: var(--primary); font: 700 1.8rem/1.6 Amiri, Georgia, serif; }
@@ -361,13 +356,178 @@ body[data-theme='dark'] .counter-number { text-shadow: none; }
 
 /* Four core routes and the home worship dashboard */
 .navbar { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-.habit-item span { min-width: 0; overflow-wrap: anywhere; }
 
 @media (max-width: 639px) {
   .navbar { width: calc(100% - 20px); inset-inline: 10px; }
   .navbar a { min-height: 56px; }
   .nav-label { font-size: clamp(.7rem, 2.7vw, .84rem); }
   .dua-actions button, .azkar-count, .target-presets button { min-height: 44px; }
+}
+
+/* Azkar category slider and devotional count cards */
+.azkar-page { width: 100%; }
+.azkar-tabs {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  margin: 0 0 14px;
+  padding: 3px 2px 9px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold-soft) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+.azkar-tab {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 48px;
+  padding: 8px 15px;
+  border: 1px solid color-mix(in srgb, var(--gold-soft) 72%, var(--border));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 78%, var(--background));
+  color: var(--text);
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color .2s ease, background-color .22s ease, border-color .22s ease, box-shadow .22s ease, transform .22s ease;
+}
+.azkar-tab:hover { border-color: var(--gold); transform: translateY(-1px); }
+.azkar-tab[aria-selected='true'] {
+  border-color: #0d3b2e;
+  background: #0d3b2e;
+  color: #c5a059;
+  box-shadow: 0 5px 18px #0d3b2e30, inset 0 1px 0 #ffffff20;
+}
+.azkar-tab[aria-selected='true']::after {
+  content: '';
+  position: absolute;
+  inset-inline: 26px;
+  bottom: -4px;
+  height: 2px;
+  border-radius: 2px;
+  background: #c5a059;
+  box-shadow: 0 0 10px #c5a059b0;
+}
+.azkar-tab-progress {
+  display: inline-grid;
+  place-items: center;
+  min-width: 35px;
+  height: 24px;
+  padding-inline: 6px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 76%, transparent);
+  color: var(--muted);
+  font-size: .75rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.azkar-tab[aria-selected='true'] .azkar-tab-progress {
+  border-color: #c5a05977;
+  background: #ffffff12;
+  color: #e8c778;
+}
+.azkar-list { grid-template-columns: minmax(0, 1fr); align-items: stretch; }
+.azkar-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 210px;
+  padding: clamp(18px, 4vw, 26px);
+  border-radius: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: opacity .24s ease, background-color .24s ease, border-color .24s ease, box-shadow .24s ease, transform .2s ease;
+}
+.azkar-card:hover { transform: translateY(-2px); box-shadow: 0 10px 26px #172b2112; }
+.azkar-card:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.azkar-text {
+  width: 100%;
+  margin: 0 0 14px;
+  color: var(--text) !important;
+  font: 400 clamp(1.75rem, 5vw, 2.2rem)/2.2 Amiri, 'Noto Naskh Arabic', Georgia, serif;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.azkar-source {
+  align-self: flex-start;
+  margin: auto 0 14px;
+  color: var(--muted);
+  font-size: .78rem;
+  line-height: 1.45;
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+.azkar-source:hover { color: var(--primary); text-decoration: underline; }
+.azkar-count {
+  display: inline-flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  width: 76px;
+  height: 76px;
+  min-height: 76px;
+  margin: 0 auto;
+  padding: 7px;
+  border: 2px solid #c5a059;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 25%, #28634c, #0d3b2e 72%);
+  color: #fffdf7;
+  box-shadow: 0 8px 18px #0d3b2e26, inset 0 1px 0 #ffffff35;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform .16s ease, opacity .22s ease, background .22s ease, box-shadow .22s ease;
+}
+.azkar-count-value { font-size: 1.65rem; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.05; }
+.azkar-count-label { color: #f0e2c3; font-size: .68rem; line-height: 1.3; }
+.azkar-count:active:not(:disabled) { transform: scale(.92); box-shadow: 0 3px 10px #0d3b2e2e, inset 0 2px 7px #061f1950; }
+.azkar-count:disabled { cursor: default; }
+.azkar-count.is-done {
+  border-color: #c5a059;
+  background: linear-gradient(145deg, #28634c, #0d3b2e);
+  color: #f0d58e;
+  font-size: .95rem;
+  font-weight: 800;
+}
+body[data-theme='dark'] .azkar-count:not(:disabled) { color: #fffdf7; }
+body[data-theme='dark'] .azkar-count.is-done { color: #f0d58e; }
+.azkar-card.is-complete { opacity: .76; border-color: color-mix(in srgb, var(--gold) 54%, var(--border)); }
+.azkar-card.is-complete .azkar-text { color: var(--muted) !important; }
+.azkar-completion {
+  margin-top: 16px;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--gold) 52%, var(--border));
+  border-radius: 18px;
+  background: linear-gradient(140deg, color-mix(in srgb, var(--gold-soft) 34%, var(--surface)), var(--surface));
+  color: var(--primary);
+  font: 700 1.25rem/1.7 Amiri, Georgia, serif;
+  text-align: center;
+  box-shadow: 0 8px 24px #c5a05916;
+  animation: azkar-completion-in .32s ease both;
+}
+.azkar-completion[hidden] { display: none; }
+@keyframes azkar-completion-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (min-width: 640px) {
+  .azkar-tabs { gap: 12px; }
+  .azkar-tab { min-height: 52px; padding-inline: 18px; }
+  .azkar-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .azkar-card { min-height: 250px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .azkar-tab, .azkar-card, .azkar-count { transition: none; }
+  .azkar-completion { animation: none; }
 }
 
 @media (min-width: 640px) {
@@ -548,21 +708,6 @@ body[data-theme='dark'] .counter-button { color: #fffdf7; }
   .memorial-banner { min-height: 66px; }
   .counter-card { padding: 8px; }
   .counter-button { width: clamp(190px, 54vw, 250px); height: clamp(190px, 54vw, 250px); }
-}
-
-/* Daily routine is grouped with Azkar */
-.daily-routine {
-  margin: 0 0 18px;
-  padding: 16px;
-  border: 1px solid color-mix(in srgb, var(--gold-soft) 70%, var(--border));
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--surface) 70%, var(--background));
-}
-.daily-routine h3 { margin: 0; color: var(--primary); font: 700 1.35rem/1.4 Amiri, Georgia, serif; }
-.daily-routine .habit-progress { margin: 4px 0 12px; }
-.daily-routine .habit-list { grid-template-columns: minmax(0, 1fr); }
-@media (min-width: 640px) {
-  .daily-routine .habit-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* Banner launched memorial modal */
