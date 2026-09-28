@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Open the Vite URL under `/Saber/`. Check with `npm run typecheck` and `npm run lint`, then build with `npm run build`. The production output is `dist/`; its base path is `/Saber/` for GitHub Pages.
+Open the Vite URL shown in the terminal. Check with `npm run typecheck` and `npm run lint`, then build with `npm run build`. The production output is `dist/`; its relative base path works at a domain root or under `/Saber/`.
 
 ## Source layout
 
@@ -23,7 +23,7 @@ Open the Vite URL under `/Saber/`. Check with `npm run typecheck` and `npm run l
 
 Memorial name and gender are initialized from URL query or hash parameters and stored locally. The creation page previews the dedication and gender-aware prayer as the form changes, then generates a shareable `#/home?name=...&g=...` URL with copy and WhatsApp actions. Azkar and duas have source links on their cards. The Quran index is bundled as small metadata; Uthmani text is fetched one surah at a time from [Al Quran Cloud](https://alquran.cloud/api) and cached in IndexedDB, with a localStorage fallback. Only surahs already opened are available offline. Reader preferences and the last-read ayah are stored locally. The More page contains the migrated names and stories plus a local-calendar-day devotional tracker. Language preference is stored locally; Arabic is the default and English switches the app to LTR.
 
-The Vite PWA plugin emits `dist/manifest.webmanifest` and `dist/sw.js` with `/Saber/` start URL, scope, icon paths, and service-worker registration. The root `manifest.json` and `sw.js` are legacy references and are not used by the production build.
+The Vite PWA plugin emits `dist/manifest.webmanifest` and `dist/sw.js` with relative start URL, scope, icon paths, and service-worker registration. These resolve from the deployment directory at both Cloudflare Pages root and GitHub Pages `/Saber/`. The root `manifest.json` and `sw.js` are legacy references and are not used by the production build.
 
 ## Ad isolation
 

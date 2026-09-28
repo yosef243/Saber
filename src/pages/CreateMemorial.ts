@@ -104,7 +104,7 @@ export function renderCreateMemorial(context: PageContext): HTMLElement {
     const profile = profileFromForm();
     if (!profile) { name.focus(); return; }
     setMemorial(profile);
-    const url = new URL(import.meta.env.BASE_URL, location.origin);
+    const url = new URL(import.meta.env.BASE_URL, location.href);
     const params = new URLSearchParams({ name: profile.name, g: profile.gender });
     if (profile.customMessage) params.set('message', profile.customMessage);
     url.hash = `/home?${params.toString()}`;
