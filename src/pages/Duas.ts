@@ -1,5 +1,6 @@
 import { duaCategories, duas, resolveDuaText } from '../data/duas';
 import type { DuaCategory } from '../types';
+import { memorialShareUrl } from '../utils/canonical';
 import { shareDuaCard } from '../utils/shareCard';
 import type { PageContext } from './types';
 
@@ -98,7 +99,9 @@ export function renderDuas(context: PageContext): HTMLElement {
       share.addEventListener('click', async () => {
         share.disabled = true;
         try {
-          const result = await shareDuaCard(dua.title, text, dua.source, context.profile);
+          const result = await shareDuaCard(
+            dua.title, text, dua.source, context.profile, memorialShareUrl(context.profile)
+          );
           status.textContent = result === 'shared'
             ? (language === 'ar' ? 'تمت المشاركة' : 'Shared')
             : (language === 'ar' ? 'تم تنزيل البطاقة' : 'Card downloaded');

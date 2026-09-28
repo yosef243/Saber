@@ -25,6 +25,8 @@ For Cloudflare Pages Git deployments, set the build command to `npm run build` a
 
 Memorial name and gender are initialized from URL query or hash parameters and stored locally. The creation page previews the dedication and gender-aware prayer as the form changes, then generates a shareable `#/home?name=...&g=...` URL with copy and WhatsApp actions. Azkar and duas have source links on their cards. The Quran index is bundled as small metadata; Uthmani text is fetched one surah at a time from [Al Quran Cloud](https://alquran.cloud/api) and cached in IndexedDB, with a localStorage fallback. Only surahs already opened are available offline. Reader preferences and the last-read ayah are stored locally. The More page contains the migrated names and stories plus a local-calendar-day devotional tracker. Language preference is stored locally; Arabic is the default and English switches the app to LTR.
 
+All shared memorial links and links in PNG dua cards use `https://sabry.pages.dev/#/home`, regardless of the host where the app is opened. The GitHub Pages entry point immediately redirects visits under `/Saber/` to the same route on the canonical Cloudflare domain.
+
 The Vite PWA plugin emits `dist/manifest.webmanifest` and `dist/sw.js` with start URL, scope, icon paths, and service-worker registration matched to the selected base path. The root `manifest.json` and `sw.js` are legacy references and are not used by the production build.
 
 ## Ad isolation

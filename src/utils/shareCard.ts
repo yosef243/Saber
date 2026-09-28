@@ -1,4 +1,5 @@
 import type { MemorialProfile } from '../types';
+import { memorialShareUrl } from './canonical';
 
 function wrapText(ctx: CanvasRenderingContext2D, value: string, maxWidth: number): string[] {
   const lines: string[] = [];
@@ -20,7 +21,8 @@ export async function shareDuaCard(
   title: string,
   prayer: string,
   source: string,
-  profile: MemorialProfile | null
+  profile: MemorialProfile | null,
+  shareUrl: string
 ): Promise<'shared' | 'downloaded'> {
   await document.fonts.ready;
   const canvas = document.createElement('canvas');
@@ -64,14 +66,26 @@ export async function shareDuaCard(
     ctx.font = '32px Amiri, Georgia, serif';
     ctx.fillText('صدقة جارية عن موتانا وموتى المسلمين', 540, 970, 920);
   }
+  const cardUrl = memorialShareUrl(profile, false);
+  const [cardBase, cardQuery] = decodeURI(cardUrl).split('?');
+  ctx.direction = 'ltr';
+  ctx.fillStyle = '#1e6f5c';
+  ctx.font = '23px system-ui, sans-serif';
+  ctx.fillText(cardBase, 540, 1014, 1000);
+  if (cardQuery) ctx.fillText(`?${cardQuery}`, 540, 1044, 1000);
 
   const blob = await new Promise<Blob>((resolve, reject) => {
     canvas.toBlob((result) => result ? resolve(result) : reject(new Error('Image export failed')), 'image/png');
   });
   const file = new File([blob], 'saber-dua.png', { type: 'image/png' });
   if (navigator.canShare?.({ files: [file] }) && navigator.share) {
-    await navigator.share({ files: [file], title });
-    return 'shared';
+    try {
+      await navigator.share({ files: [file], title, url: shareUrl });
+      return 'shared';
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') throw error;
+      // A platform may accept files but reject the URL; the PNG retains its canonical link.
+    }
   }
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');

@@ -1,5 +1,6 @@
 import { renderMemorialBanner } from '../components/MemorialBanner';
 import type { MemorialProfile } from '../types';
+import { memorialShareUrl } from '../utils/canonical';
 import { t } from '../utils/i18n';
 import { setMemorial } from '../utils/memorial';
 import type { PageContext } from './types';
@@ -104,18 +105,15 @@ export function renderCreateMemorial(context: PageContext): HTMLElement {
     const profile = profileFromForm();
     if (!profile) { name.focus(); return; }
     setMemorial(profile);
-    const url = new URL(import.meta.env.BASE_URL, location.href);
-    const params = new URLSearchParams({ name: profile.name, g: profile.gender });
-    if (profile.customMessage) params.set('message', profile.customMessage);
-    url.hash = `/home?${params.toString()}`;
-    linkInput.value = url.href;
+    const url = memorialShareUrl(profile);
+    linkInput.value = url;
     const prayerText = profile.customMessage || (profile.gender === 'f'
       ? 'اللهم اغفر لها وارحمها واجعل قبرها روضة من رياض الجنة'
       : 'اللهم اغفر له وارحمه واجعل قبره روضة من رياض الجنة');
     const dedication = language === 'ar'
       ? `صدقة جارية عن روح المرحوم ${profile.name}\n${prayerText}`
       : `An ongoing charity in memory of ${profile.name}.\nMay Allah forgive ${profile.gender === 'f' ? 'her' : 'him'} and have mercy on ${profile.gender === 'f' ? 'her' : 'him'}.\n${prayerText}`;
-    whatsapp.href = `https://wa.me/?text=${encodeURIComponent(`${dedication}\n\n${url.href}`)}`;
+    whatsapp.href = `https://wa.me/?text=${encodeURIComponent(`${dedication}\n\n${url}`)}`;
     output.hidden = false;
     status.textContent = '';
     status.classList.remove('is-visible');
