@@ -139,6 +139,7 @@ body[data-theme='dark'] .share-button { color: #09261d; }
 .name-number { color: var(--muted); font-size: .8rem; }
 .story-card summary { color: var(--primary); font-weight: 700; cursor: pointer; }
 .story-card p { margin-bottom: 0; color: var(--text); white-space: pre-line; line-height: 1.85; }
+.startup-error { margin: 20px; text-align: center; }
 
 /* Warm, devotional visual system */
 body {

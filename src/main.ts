@@ -11,22 +11,52 @@ import { renderCreateMemorial } from './pages/CreateMemorial';
 import { renderMore } from './pages/More';
 import { startRouter, type PageId } from './router';
 import type { AppSettings } from './types';
-import { loadSettings, saveSettings } from './utils/storage';
+import { defaultSettings, loadSettings, saveSettings } from './utils/storage';
 import { getMemorial, initializeMemorial } from './utils/memorial';
 
-const app = document.querySelector<HTMLDivElement>('#app');
-if (!app) throw new Error('Missing #app root');
+const existingApp = document.querySelector<HTMLDivElement>('#app');
+const app = existingApp ?? document.createElement('div');
+if (!existingApp) {
+  console.error('[Saber] Missing #app root in index.html; creating a fallback mount.');
+  app.id = 'app';
+  document.body.append(app);
+}
 
-let settings = loadSettings();
-initializeMemorial();
+let settings: AppSettings = defaultSettings;
+let currentPageId: PageId = 'home';
+
+function showRenderError(error: unknown): void {
+  console.error('[Saber] Failed to render the application:', error);
+  const panel = document.createElement('section');
+  panel.className = 'startup-error card';
+  const title = document.createElement('h2');
+  title.textContent = settings.language === 'ar' ? 'تعذر تحميل التطبيق' : 'Unable to load Saber';
+  const guidance = document.createElement('p');
+  guidance.textContent = settings.language === 'ar'
+    ? 'حدث خطأ أثناء فتح الصفحة. يرجى تحديثها للمحاولة مرة أخرى.'
+    : 'Something went wrong while opening this page. Please refresh and try again.';
+  const retry = document.createElement('button');
+  retry.type = 'button';
+  retry.className = 'primary-button';
+  retry.textContent = settings.language === 'ar' ? 'تحديث الصفحة' : 'Reload page';
+  retry.addEventListener('click', () => location.reload());
+  panel.append(title, guidance, retry);
+  app.replaceChildren(panel);
+}
+
+function safeRender(page: PageId): void {
+  try {
+    renderPage(page);
+  } catch (error) {
+    showRenderError(error);
+  }
+}
 
 function updateSettings(next: AppSettings): void {
   settings = next;
   saveSettings(settings);
-  renderPage(currentPageId);
+  safeRender(currentPageId);
 }
-
-let currentPageId: PageId = 'home';
 
 function renderPage(page: PageId): void {
   currentPageId = page;
@@ -48,7 +78,7 @@ function renderPage(page: PageId): void {
     case 'more': main.append(renderMore(context)); break;
     case 'create-memorial': main.append(renderCreateMemorial(context)); break;
   }
-  app!.replaceChildren(
+  app.replaceChildren(
     renderHeader(settings, updateSettings),
     ...((page === 'create-memorial') ? [] : [renderMemorialBanner(profile, settings.language)]),
     renderNavbar(page, settings.language),
@@ -56,4 +86,42 @@ function renderPage(page: PageId): void {
   );
 }
 
-startRouter(renderPage);
+function enableServiceWorkerUpdates(): void {
+  if (!('serviceWorker' in navigator)) return;
+  let reloading = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (reloading) return;
+    reloading = true;
+    location.reload();
+  });
+  window.addEventListener('load', () => {
+    void navigator.serviceWorker.getRegistration(import.meta.env.BASE_URL)
+      .then(async (registration) => {
+        if (!registration) return;
+        registration.waiting?.postMessage({ type: 'SKIP_WAITING' });
+        await registration.update();
+      })
+      .catch((error: unknown) => console.warn('[Saber] Service worker update check failed:', error));
+  });
+}
+
+window.addEventListener('error', (event) => {
+  console.error('[Saber] Unhandled runtime error:', event.error ?? event.message);
+});
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('[Saber] Unhandled promise rejection:', event.reason);
+});
+
+try {
+  settings = loadSettings();
+  initializeMemorial();
+  startRouter(safeRender);
+} catch (error) {
+  showRenderError(error);
+}
+
+try {
+  enableServiceWorkerUpdates();
+} catch (error) {
+  console.warn('[Saber] Service worker update setup failed:', error);
+}
