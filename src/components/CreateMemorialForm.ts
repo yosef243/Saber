@@ -1,14 +1,17 @@
-import { renderMemorialBanner } from '../components/MemorialBanner';
+import { renderMemorialBanner } from './MemorialBanner';
 import type { MemorialProfile } from '../types';
 import { memorialShareUrl } from '../utils/canonical';
 import { t } from '../utils/i18n';
 import { setMemorial } from '../utils/memorial';
-import type { PageContext } from './types';
+import type { PageContext } from '../pages/types';
 
-export function renderCreateMemorial(context: PageContext): HTMLElement {
+export function renderCreateMemorial(
+  context: PageContext,
+  onProfileSaved: (profile: MemorialProfile) => void
+): HTMLElement {
   const language = context.settings.language;
   const page = document.createElement('section');
-  page.className = 'page card create-page';
+  page.className = 'create-memorial-content';
   const title = document.createElement('h2');
   title.textContent = t(language, 'create');
   const form = document.createElement('form');
@@ -105,13 +108,14 @@ export function renderCreateMemorial(context: PageContext): HTMLElement {
     const profile = profileFromForm();
     if (!profile) { name.focus(); return; }
     setMemorial(profile);
+    onProfileSaved(profile);
     const url = memorialShareUrl(profile);
     linkInput.value = url;
     const prayerText = profile.customMessage || (profile.gender === 'f'
       ? 'اللهم اغفر لها وارحمها واجعل قبرها روضة من رياض الجنة'
       : 'اللهم اغفر له وارحمه واجعل قبره روضة من رياض الجنة');
     const dedication = language === 'ar'
-      ? `صدقة جارية عن روح المرحوم ${profile.name}\n${prayerText}`
+      ? `صدقة جارية عن روح ${profile.gender === 'f' ? 'المرحومة' : 'المرحوم'} ${profile.name}\n${prayerText}`
       : `An ongoing charity in memory of ${profile.name}.\nMay Allah forgive ${profile.gender === 'f' ? 'her' : 'him'} and have mercy on ${profile.gender === 'f' ? 'her' : 'him'}.\n${prayerText}`;
     whatsapp.href = `https://wa.me/?text=${encodeURIComponent(`${dedication}\n\n${url}`)}`;
     output.hidden = false;
@@ -137,75 +141,5 @@ export function renderCreateMemorial(context: PageContext): HTMLElement {
   });
 
   page.append(title, form, preview, output);
-  const ad = renderMemorialAd();
-  if (ad) page.append(ad);
   return page;
-}
-
-// AdSense is deliberately created only by this page.
-function renderMemorialAd(): HTMLElement | null {
-  const client = import.meta.env.VITE_ADSENSE_CLIENT?.trim();
-  const slot = import.meta.env.VITE_ADSENSE_SLOT?.trim();
-  if (!/^ca-pub-\d+$/.test(client || '') || !/^\d+$/.test(slot || '')) return null;
-
-  const container = document.createElement('aside');
-  container.className = 'memorial-ad';
-  container.setAttribute('aria-label', 'Advertisement');
-  const ad = document.createElement('ins');
-  ad.className = 'adsbygoogle';
-  ad.style.display = 'block';
-  ad.dataset.adClient = client;
-  ad.dataset.adSlot = slot;
-  ad.dataset.adFormat = 'auto';
-  ad.dataset.fullWidthResponsive = 'true';
-  container.append(ad);
-
-  const cleanup = () => {
-    observer.disconnect();
-    window.clearTimeout(timeout);
-  };
-  const observer = new MutationObserver(() => {
-    const state = ad.dataset.adStatus;
-    if (state === 'filled') {
-      container.classList.add('is-filled');
-      cleanup();
-    } else if (state === 'unfilled') {
-      cleanup();
-      container.remove();
-    }
-  });
-  observer.observe(ad, { attributes: true, attributeFilter: ['data-ad-status'] });
-  const timeout = window.setTimeout(() => {
-    if (!container.classList.contains('is-filled')) container.remove();
-    cleanup();
-  }, 30000);
-
-  queueMicrotask(() => {
-    if (document.body.dataset.page !== 'create-memorial' || !container.isConnected) return;
-    const existing = document.querySelector<HTMLScriptElement>('script[data-saber-adsense]');
-    if (existing) {
-      if (existing.dataset.loaded === 'true') pushAd(container);
-      else existing.addEventListener('load', () => pushAd(container), { once: true });
-      return;
-    }
-    const script = document.createElement('script');
-    script.async = true;
-    script.dataset.saberAdsense = 'true';
-    script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}`;
-    script.crossOrigin = 'anonymous';
-    script.addEventListener('load', () => {
-      script.dataset.loaded = 'true';
-      if (document.body.dataset.page === 'create-memorial' && container.isConnected) pushAd(container);
-    });
-    script.addEventListener('error', () => { cleanup(); container.remove(); script.remove(); }, { once: true });
-    document.head.append(script);
-  });
-  return container;
-}
-
-function pushAd(container: HTMLElement): void {
-  if (document.body.dataset.page !== 'create-memorial' || !container.isConnected) return;
-  const adWindow = window as Window & { adsbygoogle?: Record<string, unknown>[] };
-  try { (adWindow.adsbygoogle ??= []).push({}); }
-  catch { container.remove(); }
 }

@@ -53,8 +53,8 @@ body[data-theme='dark'] .counter-controls button, body[data-theme='dark'] .prima
 .field input, .field select, .field textarea { width: 100%; }
 .generated-link { display: grid; gap: 10px; overflow-wrap: anywhere; }
 .generated-link[hidden] { display: none; }
-.memorial-ad { margin-top: 24px; }
-.memorial-ad.is-filled { padding: 16px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
+.memorial-ad { display: none; margin-top: 24px; }
+.memorial-ad.is-filled { display: block; padding: 16px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
 @media (max-width: 380px) { main { padding-inline: 14px; } .site-header { padding-inline: 14px; } .navbar { padding-inline: 14px; } .theme-picker { gap: 5px; } .theme-swatch { width: 31px; height: 31px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
 
@@ -361,15 +361,9 @@ body[data-theme='dark'] .counter-number { text-shadow: none; }
 
 /* Four core routes and the home worship dashboard */
 .navbar { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-.home-dashboard, .home-sidebar { display: grid; gap: 16px; }
-.home-dashboard > *, .home-sidebar > * { min-width: 0; }
-.daily-card h2, .dedication-card h2 { margin-bottom: 8px; }
-.home-names-link { display: inline-flex; align-items: center; min-height: 44px; margin-top: 4px; color: var(--primary); font-weight: 700; text-underline-offset: 4px; }
 .habit-item span { min-width: 0; overflow-wrap: anywhere; }
 
 @media (max-width: 639px) {
-  .home-dashboard { grid-template-columns: minmax(0, 1fr); }
-  .home-sidebar { grid-template-columns: minmax(0, 1fr); }
   .navbar { width: calc(100% - 20px); inset-inline: 10px; }
   .navbar a { min-height: 56px; }
   .nav-label { font-size: clamp(.7rem, 2.7vw, .84rem); }
@@ -392,9 +386,235 @@ body[data-theme='dark'] .counter-number { text-shadow: none; }
   main { padding-inline: 28px; }
   .site-header { padding-inline: 28px; }
   .memorial-banner { margin-inline: 28px; }
-  .home-dashboard { grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); align-items: start; gap: 24px; }
-  .home-sidebar { align-content: start; }
+  .home-dashboard { grid-template-columns: minmax(0, 1fr); align-items: start; }
   .quran-page { padding-inline: clamp(32px, 5vw, 72px); }
   .quran-reader { max-width: 820px; margin-inline: auto; padding: 16px clamp(24px, 4vw, 48px); }
   .quran-text { line-height: 2.25; }
+}
+
+/* Tasbeeh sanctuary */
+.home-dashboard { display: block; }
+.counter-card {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(14px, 3.5vw, 28px);
+  text-align: center;
+}
+.counter-dhikr-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: 8px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.counter-title {
+  margin: 0;
+  color: var(--primary);
+  font: 700 clamp(1.65rem, 5vw, 2.5rem)/1.55 Amiri, 'Noto Naskh Arabic', Georgia, serif;
+  overflow-wrap: anywhere;
+}
+.dhikr-step {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--gold-soft);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--surface) 84%, var(--gold-soft));
+  color: var(--primary);
+  font: 400 1.6rem/1 system-ui, sans-serif;
+  cursor: pointer;
+}
+.counter-card .target-presets { margin: 10px auto 4px; }
+.counter-card .target-presets button {
+  min-width: 68px;
+  min-height: 42px;
+  border-color: var(--gold-soft);
+  background: var(--surface);
+  color: var(--primary);
+}
+.counter-card .target-presets button[data-target='open'] { min-width: 102px; }
+.counter-card .target-presets button[aria-pressed='true'] {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--surface);
+}
+.counter-button {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: clamp(220px, 66vw, 300px);
+  height: clamp(220px, 66vw, 300px);
+  margin: 14px auto 6px;
+  padding: 22px;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 26%, #28634c 0, #174b38 40%, #0f382c 76%);
+  color: #fffdf7;
+  box-shadow: 0 18px 42px #0b2e222e, inset 0 3px 7px #ffffff2b, inset 0 -10px 18px #061f1940;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  transition: transform .18s ease, box-shadow .24s ease;
+  animation: dial-breathe 5.8s ease-in-out infinite;
+}
+body[data-theme='dark'] .counter-button { color: #fffdf7; }
+.counter-progress-ring {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+.counter-ring-track, .counter-ring-value {
+  fill: none;
+  stroke-width: 5;
+}
+.counter-ring-track { stroke: #ffffff45; }
+.counter-ring-value {
+  stroke: #c5a059;
+  stroke-linecap: round;
+  transition: stroke-dashoffset .42s cubic-bezier(.2, .75, .25, 1);
+  filter: drop-shadow(0 0 5px #d4af3780);
+}
+.counter-number {
+  position: relative;
+  z-index: 1;
+  color: #fffdf7;
+  font-size: clamp(4rem, 15vw, 6rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-shadow: 0 2px 12px #061f1940;
+}
+.counter-hint {
+  position: relative;
+  z-index: 1;
+  color: #f7eedb;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.counter-button:active { transform: scale(.965); box-shadow: 0 9px 24px #0b2e2234, inset 0 2px 12px #061f1940; }
+.counter-button:active::after { inset: 5px; opacity: .8; animation: bead-ripple .48s ease-out; }
+.counter-button:disabled { cursor: wait; }
+.counter-progress { margin: 0; color: var(--primary); font-weight: 700; font-variant-numeric: tabular-nums; }
+.counter-total { margin: 3px 0; color: var(--muted); font-size: .9rem; }
+.counter-notice { min-height: 1.4em; margin: 2px 0; color: var(--primary); font-size: .92rem; font-weight: 700; }
+.counter-card .counter-controls { margin-top: 5px; }
+.counter-card .counter-preferences { gap: 18px; margin-top: 10px; font-size: .86rem; }
+.counter-card .counter-preferences label { color: var(--muted); }
+.counter-card .counter-preferences input { width: 18px; height: 18px; }
+.counter-card.target-reached { animation: target-glow .54s ease-out; }
+.counter-card.target-reached .counter-ring-value { filter: drop-shadow(0 0 9px #d4af37); }
+@keyframes dial-breathe {
+  0%, 100% { box-shadow: 0 18px 42px #0b2e222e, inset 0 3px 7px #ffffff2b, inset 0 -10px 18px #061f1940; }
+  50% { box-shadow: 0 22px 48px #0b2e2238, inset 0 4px 9px #ffffff38, inset 0 -10px 18px #061f1940; }
+}
+@keyframes target-glow {
+  0% { box-shadow: 0 0 0 0 #c5a05900, var(--shadow); }
+  40% { box-shadow: 0 0 0 10px #c5a05938, 0 0 38px #c5a05940; }
+  100% { box-shadow: var(--shadow); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .counter-card.target-reached { animation: none; }
+  .counter-button { animation: none; }
+  .counter-ring-value { transition: none; }
+}
+
+@media (max-width: 639px) {
+  .site-header { padding-top: 12px; padding-bottom: 6px; }
+  .site-header h1 { margin-top: 8px; font-size: clamp(1.35rem, 5vw, 1.7rem); line-height: 1.2; }
+  .memorial-banner { min-height: 72px; margin-top: 4px; margin-bottom: 9px; padding-block: 7px; }
+  .counter-card { padding: 12px; }
+  .counter-title { font-size: clamp(1.45rem, 4.7vw, 2rem); line-height: 1.35; }
+  .counter-card .target-presets { margin-top: 6px; margin-bottom: 0; }
+  .counter-card .target-presets button { min-height: 38px; padding-block: 5px; }
+  .counter-button { width: clamp(205px, 58vw, 270px); height: clamp(205px, 58vw, 270px); margin: 8px auto 2px; }
+  .counter-number { font-size: clamp(3.8rem, 14vw, 5rem); }
+  .counter-notice { min-height: 1.1em; margin-block: 0; }
+  .counter-card .counter-controls { margin-top: 1px; }
+  .counter-card .counter-preferences { margin-top: 6px; }
+}
+@media (max-width: 639px) and (max-height: 780px) {
+  .site-header { padding-top: 8px; }
+  .memorial-banner { min-height: 66px; }
+  .counter-card { padding: 8px; }
+  .counter-button { width: clamp(190px, 54vw, 250px); height: clamp(190px, 54vw, 250px); }
+}
+
+/* Daily routine is grouped with Azkar */
+.daily-routine {
+  margin: 0 0 18px;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--gold-soft) 70%, var(--border));
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 70%, var(--background));
+}
+.daily-routine h3 { margin: 0; color: var(--primary); font: 700 1.35rem/1.4 Amiri, Georgia, serif; }
+.daily-routine .habit-progress { margin: 4px 0 12px; }
+.daily-routine .habit-list { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 640px) {
+  .daily-routine .habit-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Banner launched memorial modal */
+.memorial-badge, .memorial-invite { appearance: none; border: 1px solid var(--gold-soft); cursor: pointer; font: inherit; }
+.create-memorial-modal {
+  width: min(720px, calc(100vw - 28px));
+  max-width: none;
+  max-height: min(90dvh, 900px);
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--gold-soft);
+  border-radius: 24px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 24px 80px #111a1533;
+}
+.create-memorial-modal::backdrop { background: #101a16a6; backdrop-filter: blur(5px); }
+.create-memorial-modal-frame { position: relative; max-height: min(90dvh, 900px); padding: 26px; overflow-y: auto; overscroll-behavior: contain; }
+.modal-close {
+  position: sticky;
+  z-index: 3;
+  top: 0;
+  float: inline-end;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  margin: -12px -12px 4px 8px;
+  border: 1px solid var(--gold-soft);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--primary);
+  font-size: 1.7rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.create-memorial-content { clear: both; }
+.create-memorial-content > h2 { margin: 0 0 18px; color: var(--primary); font: 700 1.8rem/1.4 Amiri, Georgia, serif; }
+.create-memorial-content .memorial-preview { margin-top: 18px; }
+.create-memorial-modal .memorial-ad { margin-top: 18px; }
+@media (max-width: 639px) {
+  .create-memorial-modal {
+    position: fixed;
+    inset: auto 0 0;
+    width: 100%;
+    max-height: min(92dvh, 900px);
+    margin: 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 24px 24px 0 0;
+  }
+  .create-memorial-modal-frame { max-height: min(92dvh, 900px); padding: 22px 18px calc(22px + env(safe-area-inset-bottom)); }
 }

@@ -1,7 +1,10 @@
 import type { Language, MemorialProfile } from '../types';
-import { pageHref } from '../router';
 
-export function renderMemorialBanner(profile: MemorialProfile | null, language: Language): HTMLElement {
+export function renderMemorialBanner(
+  profile: MemorialProfile | null,
+  language: Language,
+  onCreate?: () => void
+): HTMLElement {
   const banner = document.createElement('aside');
   banner.className = 'memorial-banner';
   banner.setAttribute('aria-label', language === 'ar' ? 'صدقة جارية' : 'Ongoing charity memorial');
@@ -42,8 +45,11 @@ export function renderMemorialBanner(profile: MemorialProfile | null, language: 
   divider.setAttribute('aria-hidden', 'true');
   copy.append(divider, prayer);
   banner.append(copy);
-  const link = document.createElement('a');
-  link.href = pageHref('create-memorial');
+  const link = document.createElement(onCreate ? 'button' : 'span');
+  if (link instanceof HTMLButtonElement) {
+    link.type = 'button';
+    link.addEventListener('click', onCreate!);
+  }
   link.className = profile ? 'memorial-badge' : 'memorial-invite';
   link.textContent = profile
     ? (language === 'ar' ? 'إنشاء صدقة جارية' : 'Create ongoing charity')

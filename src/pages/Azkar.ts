@@ -1,5 +1,8 @@
 import { getAzkar, type AzkarCategory } from '../data/azkar';
+import { dailyTasks } from '../data/tasks';
 import { vibrateTap } from '../utils/haptics';
+import { getDailyProgress, setTaskCompleted } from '../utils/dailyTracker';
+import { t } from '../utils/i18n';
 import type { PageContext } from './types';
 
 const STORAGE_KEY = 'saber.v2.azkar';
@@ -39,6 +42,37 @@ export function renderAzkar(context: PageContext): HTMLElement {
   page.className = 'page card';
   const heading = document.createElement('h2');
   heading.textContent = language === 'ar' ? 'الأذكار' : 'Azkar';
+  const routine = document.createElement('section');
+  routine.className = 'daily-routine';
+  const routineHeading = document.createElement('h3');
+  routineHeading.textContent = t(language, 'habits');
+  const routineProgress = document.createElement('p');
+  routineProgress.className = 'habit-progress';
+  routineProgress.setAttribute('role', 'status');
+  const routineList = document.createElement('div');
+  routineList.className = 'habit-list';
+  const routineChecks = new Map<string, HTMLInputElement>();
+  const refreshRoutine = (): void => {
+    const complete = getDailyProgress();
+    routineProgress.textContent = `${t(language, 'completedToday')}: ${complete.size} / ${dailyTasks.length}`;
+    routineChecks.forEach((checkbox, id) => { checkbox.checked = complete.has(id); });
+  };
+  for (const task of dailyTasks) {
+    const label = document.createElement('label');
+    label.className = 'habit-item';
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.addEventListener('change', () => {
+      setTaskCompleted(task.id, checkbox.checked);
+      refreshRoutine();
+    });
+    const text = document.createElement('span');
+    text.textContent = language === 'ar' ? task.labelAr : task.labelEn;
+    label.append(checkbox, text);
+    routineList.append(label);
+    routineChecks.set(task.id, checkbox);
+  }
+  routine.append(routineHeading, routineProgress, routineList);
   const tabs = document.createElement('div');
   tabs.className = 'content-tabs';
   tabs.setAttribute('role', 'tablist');
@@ -133,7 +167,26 @@ export function renderAzkar(context: PageContext): HTMLElement {
     draw();
     tabs.querySelectorAll<HTMLButtonElement>('button')[next].focus();
   });
-  page.append(heading, tabs, toolbar, list);
+  page.append(heading, routine, tabs, toolbar, list);
+  refreshRoutine();
   draw();
+  const timer = window.setInterval(() => {
+    if (page.isConnected) refreshRoutine();
+    else window.clearInterval(timer);
+  }, 60000);
+  const visibilityController = new AbortController();
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && page.isConnected) refreshRoutine();
+  }, { signal: visibilityController.signal });
+  const pageObserver = new MutationObserver(() => {
+    if (!page.isConnected) {
+      visibilityController.abort();
+      pageObserver.disconnect();
+    }
+  });
+  queueMicrotask(() => {
+    if (page.isConnected) pageObserver.observe(document.querySelector('#app')!, { childList: true });
+    else visibilityController.abort();
+  });
   return page;
 }

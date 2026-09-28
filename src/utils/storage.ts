@@ -49,6 +49,7 @@ export interface TasbeehProgress {
   currentCount: number;
   totalCount: number;
   customTargets: Record<string, number>;
+  openEnded: boolean;
 }
 
 export function loadTasbeehProgress(): TasbeehProgress {
@@ -65,12 +66,13 @@ export function loadTasbeehProgress(): TasbeehProgress {
     activeId: typeof input.activeId === 'string' ? input.activeId : '',
     currentCount: Number.isSafeInteger(input.currentCount) && (input.currentCount ?? 0) >= 0 ? input.currentCount! : 0,
     totalCount: Number.isSafeInteger(input.totalCount) && (input.totalCount ?? 0) >= 0 ? input.totalCount! : 0,
-    customTargets
+    customTargets,
+    openEnded: input.openEnded === true
   };
 }
 
 export function emptyTasbeehProgress(): TasbeehProgress {
-  return { activeId: '', currentCount: 0, totalCount: 0, customTargets: {} };
+  return { activeId: '', currentCount: 0, totalCount: 0, customTargets: {}, openEnded: false };
 }
 
 export function saveTasbeehProgress(progress: TasbeehProgress): void {

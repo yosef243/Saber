@@ -1,4 +1,4 @@
-export const pageIds = ['home', 'azkar', 'duas', 'quran', 'names', 'create-memorial'] as const;
+export const pageIds = ['home', 'azkar', 'duas', 'quran', 'names'] as const;
 export type PageId = typeof pageIds[number];
 
 export function currentPage(): PageId {

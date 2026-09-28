@@ -1,13 +1,13 @@
 import './styles/main.css';
 import './styles/themes.css';
 import { renderHeader } from './components/Header';
+import { showCreateMemorialModal } from './components/CreateMemorialModal';
 import { renderMemorialBanner } from './components/MemorialBanner';
 import { renderNavbar } from './components/Navbar';
 import { renderHome } from './pages/Home';
 import { renderAzkar } from './pages/Azkar';
 import { renderDuas } from './pages/Duas';
 import { renderQuran } from './pages/Quran';
-import { renderCreateMemorial } from './pages/CreateMemorial';
 import { renderNames } from './pages/Names';
 import { startRouter, type PageId } from './router';
 import type { AppSettings } from './types';
@@ -76,11 +76,22 @@ function renderPage(page: PageId): void {
     case 'duas': main.append(renderDuas(context)); break;
     case 'quran': main.append(renderQuran(context)); break;
     case 'names': main.append(renderNames(context)); break;
-    case 'create-memorial': main.append(renderCreateMemorial(context)); break;
   }
+  let openMemorialModal: () => void = () => undefined;
+  const refreshMemorialBanner = (): void => {
+    const currentBanner = app.querySelector('.memorial-banner');
+    if (currentBanner) {
+      currentBanner.replaceWith(renderMemorialBanner(getMemorial(), settings.language, openMemorialModal));
+    }
+    document.title = `${getMemorial()?.name || (settings.language === 'ar' ? 'صدقة جارية' : 'Sadaqa Jariyah')} | Saber`;
+  };
+  openMemorialModal = () => showCreateMemorialModal(
+    { settings, profile: getMemorial(), onSettingsChange: updateSettings },
+    refreshMemorialBanner
+  );
   app.replaceChildren(
     renderHeader(settings, updateSettings),
-    ...((page === 'create-memorial') ? [] : [renderMemorialBanner(profile, settings.language)]),
+    renderMemorialBanner(profile, settings.language, openMemorialModal),
     renderNavbar(page, settings.language),
     main
   );
