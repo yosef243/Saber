@@ -1,4 +1,5 @@
 import type { AppSettings, Theme } from '../types';
+import { renderInstallPrompt } from './InstallPrompt';
 
 const themes: Theme[] = ['default', 'blue', 'brown', 'dark'];
 const themeColors: Record<Theme, string> = {
@@ -42,5 +43,6 @@ export function renderHeader(
   const title = document.createElement('h1');
   title.textContent = settings.language === 'ar' ? 'صدقة جارية' : 'Sadaqa Jariyah';
   header.append(title);
+  header.append(renderInstallPrompt(settings.language));
   return header;
 }

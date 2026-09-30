@@ -15,6 +15,35 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .site-header h1 { margin: 18px 0 0; color: var(--primary); font-size: clamp(1.55rem, 6vw, 2.2rem); overflow-wrap: anywhere; }
 .memorial-message { color: var(--muted); white-space: pre-wrap; overflow-wrap: anywhere; }
 .header-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.install-prompt { display: flex; flex-direction: column; align-items: center; gap: 7px; margin-top: 10px; }
+.install-prompt[hidden], .install-prompt-help[hidden] { display: none; }
+.install-prompt-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 7px 16px;
+  border: 1px solid var(--gold-soft);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 82%, var(--gold-soft));
+  color: var(--primary);
+  font-size: .92rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px #172b210d;
+}
+.install-prompt-button:hover { border-color: var(--gold); background: color-mix(in srgb, var(--surface) 66%, var(--gold-soft)); }
+.install-prompt-help {
+  max-width: min(100%, 430px);
+  margin: 0;
+  padding: 8px 13px;
+  border: 1px solid var(--gold-soft);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: .88rem;
+  box-shadow: var(--shadow);
+}
 .text-button { border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--text); padding: 8px 14px; min-height: 44px; cursor: pointer; }
 .theme-picker { display: flex; gap: 8px; }
 .theme-swatch { width: 36px; height: 36px; border: 2px solid var(--surface); border-radius: 50%; cursor: pointer; }
