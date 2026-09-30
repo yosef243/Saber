@@ -36,6 +36,15 @@
           }
         }
 
+        const navigatorWithStandalone = navigator;
+        const isStandalone = (typeof window.matchMedia === 'function' && window.matchMedia('(display-mode: standalone)').matches) ||
+          navigatorWithStandalone.standalone === true;
+        if (isStandalone) {
+          const redirectParams = new URLSearchParams(query);
+          redirectParams.set('standalone', '1');
+          query = '?' + redirectParams.toString();
+        }
+
         const destination = 'https://sabry.pages.dev' + cleanPath + query + window.location.hash;
         window.location.replace(destination);
       }

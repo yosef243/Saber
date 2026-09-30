@@ -22,7 +22,8 @@ function isIOS(): boolean {
 function isInstalled(): boolean {
   const navigatorWithStandalone = navigator as Navigator & { standalone?: boolean };
   const standaloneDisplay = typeof window.matchMedia === 'function' && window.matchMedia('(display-mode: standalone)').matches;
-  return navigatorWithStandalone.standalone === true || standaloneDisplay;
+  const standaloneQuery = new URLSearchParams(window.location.search).get('standalone') === '1';
+  return standaloneDisplay || navigatorWithStandalone.standalone === true || standaloneQuery;
 }
 
 function updatePrompt(): void {
